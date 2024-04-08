@@ -5,13 +5,13 @@ import { redirect } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function DashboardLayout({ children }) {
-  // const { isLoggedIn, token } = useAuth();
-  // useEffect(() => {
-  //   const sessionToken = localStorage.getItem("token");
-  //   if (!sessionToken) {
-  //     redirect("/auth/login");
-  //   }
-  // }, []);
+  const { isLoggedIn, token } = useAuth();
+  useEffect(() => {
+    const sessionToken = localStorage.getItem("token");
+    if (!sessionToken) {
+      redirect("/auth/login");
+    }
+  }, []);
   return (
     <div className="font-nunito relative">
       <SideBarProvider />
