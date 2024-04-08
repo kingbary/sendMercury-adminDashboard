@@ -1,56 +1,60 @@
 import React from "react";
-import Container from "../universal/Container";
-import VendorDetailsCard from "./VendorDetailsCard";
 import useListBasicVendors from "@/hooks/queries/useListBasicVendors";
 import useListSilverVendors from "@/hooks/queries/useListSilverVendors";
 import useListPlatinumVendors from "@/hooks/queries/useListPlatinumVendors";
 import useListSuspendedBasicVendors from "@/hooks/queries/useListSuspendedBasicVendors";
 import useListSuspendedSilverVendors from "@/hooks/queries/useListSuspendedSilverVendors";
 import useListSuspendedPlatinumVendors from "@/hooks/queries/useListSuspendedPlatinumVendors";
+import Container from "../universal/Container";
+import VendorDetailsCard from "./VendorDetailsCard";
 
 export default function VendorsDetails({ plan, status }) {
-  // Use the appropriate hook based on the selected status
-  const activeVendorsHook =
-    status === "active"
-      ? plan === "basic"
-        ? useListBasicVendors()
-        : plan === "silver"
-        ? useListSilverVendors()
-        : useListPlatinumVendors()
-      : null;
+  const { data: activeBasicData, isError: basicDataError } =
+    useListBasicVendors();
+  const { data: activeSilverData, isError: silverDataError } =
+    useListSilverVendors();
+  const { data: activePlatinumData, isError: platinumError } =
+    useListPlatinumVendors();
+  const { data: suspendedBasicData } = useListSuspendedBasicVendors();
+  const { data: suspendedSilverData } = useListSuspendedSilverVendors();
+  const { data: suspendedPlatinumData } = useListSuspendedPlatinumVendors();
 
-  const suspendedVendorsHook =
+  let filteredVendors = [];
+
+  // Check if the status is "active" or "suspended"
+  const activeData =
+    status === "active"
+      ? [activeBasicData, activeSilverData, activePlatinumData]
+      : [];
+  const suspendedData =
     status === "suspended"
-      ? plan === "basic"
-        ? useListSuspendedBasicVendors()
-        : plan === "silver"
-        ? useListSuspendedSilverVendors()
-        : useListSuspendedPlatinumVendors()
-      : null;
+      ? [suspendedBasicData, suspendedSilverData, suspendedPlatinumData]
+      : [];
 
-  // Destructure data and isError from the hooks
-  const {
-    data: activeData,
-    isError: activeError,
-    isFetching: activeFetching,
-  } = activeVendorsHook || {};
+  // Merge active and suspended data based on the selected plan
+  const data =
+    plan === "basic"
+      ? [activeBasicData, suspendedBasicData]
+      : plan === "silver"
+      ? [activeSilverData, suspendedSilverData]
+      : plan === "platinum"
+      ? [activePlatinumData, suspendedPlatinumData]
+      : [];
 
-  const {
-    data: suspendedData,
-    isError: suspendedError,
-    isFetching: suspendedFetching,
-  } = suspendedVendorsHook || {};
-
-  // Combine active and suspended vendors based on status
-  const vendors =
-    status === "active"
-      ? activeData?.data?.data?.vendors
-      : suspendedData?.data?.data?.vendors;
+  // Filter vendors based on the selected plan and status
+  data.forEach((data) => {
+    if (data && data.data) {
+      const vendors = data.data.data.vendors.filter(
+        (vendor) => vendor.planName === plan
+      );
+      filteredVendors = [...filteredVendors, ...vendors];
+    }
+  });
 
   return (
     <Container>
-      {vendors ? (
-        vendors.map((vendor) => (
+      {filteredVendors.length > 0 ? (
+        filteredVendors.map((vendor) => (
           <VendorDetailsCard
             key={vendor.id}
             vendorName={vendor.fullName}
@@ -62,11 +66,7 @@ export default function VendorsDetails({ plan, status }) {
           />
         ))
       ) : (
-        <p>
-          {activeFetching || suspendedFetching
-            ? "Loading..."
-            : "No Vendors available for the selected Plan and Status"}
-        </p>
+        <p>No Vendors available for the selected Plan and Status</p>
       )}
     </Container>
   );
