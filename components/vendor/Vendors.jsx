@@ -32,6 +32,7 @@ export default function Vendors() {
             {vendorMetricData?.map((data) => {
               return (
                 <InnerCard
+                  key={data?.plan}
                   cardHeading={`${data?.plan} Plan Vendors`}
                   value={data?.total}
                   percentageIncrease={data?.percentage}

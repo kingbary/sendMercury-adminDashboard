@@ -21,7 +21,7 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { useForm } from "react-hook-form";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { PulseLoader } from "react-spinners";
@@ -48,7 +48,7 @@ export default function ActivateVendor() {
     axios
       .patch(
         `${baseUrl}/admin/vendors/${userId}`,
-        {}, // Empty data payload
+        {},
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -57,7 +57,6 @@ export default function ActivateVendor() {
       )
       .then((response) => {
         setConfirmationModal(true);
-        // console.log("Vendor has been reactivated successfully:", response);
         queryClient.invalidateQueries({
           queryKey: [`get-vendors-details, ${userId}`],
         });

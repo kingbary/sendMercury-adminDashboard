@@ -52,7 +52,7 @@ export default function VendorDetailsCard({
                     variant="tertiary"
                     className="px-2 py-2 text-xs font-medium mb-6 w-1/3 md:hidden"
                   >
-                    {vendorPlan} PLAN
+                    {vendorPlan} Plan
                   </Button>
                   <div>
                     <p>

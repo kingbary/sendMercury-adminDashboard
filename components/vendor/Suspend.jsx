@@ -21,7 +21,7 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { useForm } from "react-hook-form";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { PulseLoader } from "react-spinners";
