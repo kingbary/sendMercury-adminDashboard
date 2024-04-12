@@ -13,8 +13,7 @@ export default function Vendors() {
   const [plan, setPlanChange] = useState("basic");
   const [status, setStatus] = useState("active");
   const { data: vendorMetric } = useGetVendorsMetricData();
-  const vendorMetricData = vendorMetric?.data?.data.metrics;
-  console.log(vendorMetricData);
+  const vendorMetricData = vendorMetric?.data?.data?.metrics;
   const { data, isLoading, refetch } = useListVendors({
     plan: plan,
     pageParam: 1,
@@ -45,27 +44,6 @@ export default function Vendors() {
         ) : (
           <PulseLoader color="#4d4d4d" />
         )}
-        {/* <InnerCard
-          cardHeading={"Silver plan Vendors"}
-          value={"2,999,987"}
-          percentageIncrease={"29.09"}
-          increaseAmount={"- 10,000"}
-          percentage
-        />
-        <InnerCard
-          cardHeading={"Gold Plan Vendors"}
-          value={"234,989"}
-          percentageIncrease={"29.09"}
-          increaseAmount={"+1,234"}
-          percentage
-        />
-        <InnerCard
-          cardHeading={"Platinum Plan Vendors"}
-          value={"23,456"}
-          percentageIncrease={"29.09"}
-          increaseAmount={"+12,456"}
-          percentage
-        /> */}
       </div>
       <div className="flex gap-4 mx-4 my-8 md:m-8">
         <PlanSelect handlePlanChange={setPlanChange} />
