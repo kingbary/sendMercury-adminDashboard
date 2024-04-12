@@ -26,15 +26,11 @@ export const REVIEWS = "/admin/reviews";
 export const GET_REVIEWS = "/admin/reviews";
 
 // VENDORS
-export const PLATINUM_VENDORS = "/admin/vendors?plan=platinum&page=1&limit=20";
-export const PLATINUM_VENDORS_SUSPENDED =
-  "/admin/vendors?plan=platinum&page=1&limit=20&status=suspended";
-export const SILVER_VENDORS = "/admin/vendors?plan=silver&page=1&limit=20";
-export const SILVER_VENDORS_SUSPENDED =
-  "/admin/vendors?plan=silver&page=1&limit=20&status=suspended";
-export const BASIC_VENDORS = "/admin/vendors?plan=basic&page=1&limit=20";
-export const BASIC_VENDORS_SUSPENDED =
-  "/admin/vendors?plan=basic&page=1&limit=20&status=suspended";
+export const VENDORS_METRIC = "/admin/vendors/metrics";
+export const LIST_VENDORS = (plan, pageParam, status, limit) =>
+  `/admin/vendors?plan=${plan}&page=${pageParam || 0}&limit=${
+    limit || 20
+  }&status=${status}`;
 export const SUSPEND_VENDOR = (userId) => `/admin/vendors/${userId}`;
 
 export const GET_VENDORS_DETAILS = (userId) =>

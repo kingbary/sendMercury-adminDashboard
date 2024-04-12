@@ -23,11 +23,14 @@ import {
 import { useForm } from "react-hook-form";
 import { useParams, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { PulseLoader } from "react-spinners";
 
 export default function Suspend() {
   const [open, setOpen] = useState(false);
   const [formStep, setFormStep] = useState("step1");
   const [confirmationModal, setConfirmationModal] = useState(false);
+  const queryClient = useQueryClient();
 
   const params = useParams();
   const userId = params.vendorId;
@@ -36,7 +39,7 @@ export default function Suspend() {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isLoading },
   } = useForm({
     mode: "all",
   });
@@ -55,6 +58,9 @@ export default function Suspend() {
       })
       .then((response) => {
         console.log("Delete request successful:", response);
+        queryClient.invalidateQueries({
+          queryKey: [`get-vendors-details, ${userId}`],
+        });
         setConfirmationModal(true);
       })
       .catch((error) => {
@@ -86,7 +92,7 @@ export default function Suspend() {
                   formStep === "step3" ? "hidden" : "block"
                 }`}
               >
-                <DialogTitle className="mb-6">
+                <DialogTitle className="mb-6 text-center">
                   {formStep === "step1"
                     ? "Reason for suspension"
                     : "Are you sure you want to suspend vendor ?"}
@@ -130,7 +136,11 @@ export default function Suspend() {
                       className={`${formStep === "step2" ? "block" : "hidden"}`}
                       type="submit"
                     >
-                      Suspend Vendor
+                      {isLoading ? (
+                        <PulseLoader color="#4d4d4d" />
+                      ) : (
+                        " Suspend Vendor"
+                      )}
                     </Button>
                   </div>
                   <DialogClose aschild="true">

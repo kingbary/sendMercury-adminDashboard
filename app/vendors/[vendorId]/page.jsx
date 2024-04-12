@@ -26,7 +26,7 @@ export default function Page() {
   const { data, isError, isFetching } = useGetVendorDetails(userId);
   const vendorData = data?.data?.data;
   const products = vendorData?.products;
-  console.log(products);
+  console.log(vendorData);
 
   return (
     <DashboardLayout>
@@ -72,6 +72,7 @@ export default function Page() {
                       }
                       width={170}
                       height={170}
+                      alt="vendor's image"
                     />
                   </div>
                   <div>

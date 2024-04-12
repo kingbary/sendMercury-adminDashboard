@@ -23,12 +23,14 @@ import {
 import { useForm } from "react-hook-form";
 import { useParams, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { PulseLoader } from "react-spinners";
 
 export default function ActivateVendor() {
   const [open, setOpen] = useState(false);
   const [formStep, setFormStep] = useState("step1");
   const [confirmationModal, setConfirmationModal] = useState(false);
-
+  const queryClient = useQueryClient();
   const params = useParams();
   const userId = params.vendorId;
   const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
@@ -36,26 +38,29 @@ export default function ActivateVendor() {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { isSubmitting },
   } = useForm({
     mode: "all",
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = () => {
     const authToken = localStorage.getItem("token");
-    const vendorSuspendData = {
-      message: data.message,
-    };
     axios
-      .delete(`${baseUrl}/admin/vendors/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-        data: vendorSuspendData,
-      })
+      .patch(
+        `${baseUrl}/admin/vendors/${userId}`,
+        {}, // Empty data payload
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      )
       .then((response) => {
-        console.log("Vendor has been reactivated successful:", response);
         setConfirmationModal(true);
+        // console.log("Vendor has been reactivated successfully:", response);
+        queryClient.invalidateQueries({
+          queryKey: [`get-vendors-details, ${userId}`],
+        });
       })
       .catch((error) => {
         console.error("Error reactivating vendor:", error);
@@ -65,7 +70,7 @@ export default function ActivateVendor() {
 
   return (
     <div className="px-4 w-full">
-      <Dialog>
+      <Dialog openDialog={open} onDialogOpenChange={setOpen}>
         <DialogTrigger aschild="true">
           <div>
             <Button
@@ -80,57 +85,18 @@ export default function ActivateVendor() {
         {!confirmationModal && (
           <DialogContent>
             <DialogHeader className="flex flex-col items-center py-1">
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className={`w-full ${
-                  formStep === "step3" ? "hidden" : "block"
-                }`}
-              >
-                <DialogTitle className="mb-6">
-                  {formStep === "step1"
-                    ? "Reason for suspension"
-                    : "Are you sure you want to suspend vendor ?"}
+              <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+                <DialogTitle className="mb-6 text-center">
+                  Are you sure you want to reactivate vendor ?
                 </DialogTitle>
-                <div
-                  className={`flex flex-col w-full mb-6 ${
-                    formStep === "step1" ? "block" : "hidden"
-                  }`}
-                >
-                  <textarea
-                    className="border border-neutral-300 focus:outline-neutral-300 rounded-xl p-5"
-                    name="message"
-                    {...register("message", {
-                      required: "The reason for suspension is required",
-                    })}
-                    cols="30"
-                    rows="10"
-                    spellCheck
-                    placeholder="Enter your reason for suspending vendor"
-                  ></textarea>
-                  {errors.message && (
-                    <p className="text-red-500">{`${errors?.message?.message}`}</p>
-                  )}
-                </div>
                 <div className="flex flex-col items-center gap-4">
                   <div>
-                    <Button
-                      variant="destructive"
-                      className={`${formStep === "step2" ? "hidden" : "block"}`}
-                      type="button"
-                      onClick={() => {
-                        if (formStep === "step1") {
-                          setFormStep("step2");
-                        }
-                      }}
-                    >
-                      Suspend Vendor
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      className={`${formStep === "step2" ? "block" : "hidden"}`}
-                      type="submit"
-                    >
-                      Suspend Vendor
+                    <Button variant="default" type="submit">
+                      {isSubmitting ? (
+                        <PulseLoader color="#4d4d4d" />
+                      ) : (
+                        "Reactivate Vendor"
+                      )}
                     </Button>
                   </div>
                   <DialogClose aschild="true">
@@ -138,7 +104,6 @@ export default function ActivateVendor() {
                       type="button"
                       variant="outline"
                       onClick={() => {
-                        setFormStep("step1");
                         reset();
                       }}
                     >
@@ -159,7 +124,7 @@ export default function ActivateVendor() {
               alt=""
             />
             <p className="text-2xl text-center font-medium">
-              You have successfully suspended this vendor.
+              You have successfully reactivated this vendor.
             </p>
             <DialogClose>
               <div>
@@ -173,66 +138,22 @@ export default function ActivateVendor() {
       </Dialog>
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger aschild="true">
-          <Button variant="destructive" className="md:hidden">
-            Suspend Vendor
+          <Button variant="default" className="md:hidden">
+            Reactivate Vendor
           </Button>
         </DrawerTrigger>
         {!confirmationModal && (
           <DrawerContent>
             <DrawerHeader className="text-left">
               <DrawerDescription>
-                <form
-                  onSubmit={handleSubmit(onSubmit)}
-                  className={`w-full ${
-                    formStep === "step3" ? "hidden" : "block"
-                  }`}
-                >
-                  <DrawerTitle className="mb-6">
-                    {formStep === "step1"
-                      ? "Reason for suspension"
-                      : "Are you sure you want to suspend vendor ?"}
+                <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+                  <DrawerTitle className="mb-6 text-center">
+                    Are you sure you want to reactivate vendor ?
                   </DrawerTitle>
-                  <div
-                    className={`flex flex-col w-full mb-6 ${
-                      formStep === "step1" ? "block" : "hidden"
-                    }`}
-                  >
-                    <textarea
-                      className="border border-neutral-300 focus:outline-neutral-300 rounded-xl p-5"
-                      name="message"
-                      {...register("message", {
-                        required: "The reason for suspension is required",
-                      })}
-                      cols="30"
-                      rows="10"
-                      spellCheck
-                      placeholder="Enter your reason for suspending vendor"
-                    ></textarea>
-                  </div>
                   <div className="flex flex-col items-center gap-4">
                     <div>
-                      <Button
-                        variant="destructive"
-                        className={`${
-                          formStep === "step2" ? "hidden" : "block"
-                        }`}
-                        type="button"
-                        onClick={() => {
-                          if (formStep === "step1") {
-                            setFormStep("step2");
-                          }
-                        }}
-                      >
-                        Suspend Vendor
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        className={`${
-                          formStep === "step2" ? "block" : "hidden"
-                        }`}
-                        type="submit"
-                      >
-                        Suspend Vendor
+                      <Button variant="default" type="submit">
+                        Reactivate Vendor
                       </Button>
                     </div>
                     <DrawerClose aschild="true">
@@ -241,7 +162,6 @@ export default function ActivateVendor() {
                         variant="outline"
                         onClick={() => {
                           reset();
-                          setFormStep("step1");
                         }}
                       >
                         Cancel
@@ -262,7 +182,7 @@ export default function ActivateVendor() {
               alt=""
             />
             <p className="text-2xl text-center font-medium">
-              You have successfully suspended this vendor.
+              You have successfully reactivated this vendor.
             </p>
             <DrawerClose>
               <Button
