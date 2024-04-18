@@ -7,22 +7,28 @@ import {
   SelectValue,
 } from "../ui/select";
 
-export default function ProductStatusSelect({ handleActiveTab }) {
+export default function ProductStatusSelect({ handleStatusSelect }) {
   return (
-    <Select onValueChange={(value) => handleActiveTab(value)} className="w-full">
+    <Select onValueChange={(value) => handleStatusSelect(value)} className="w-full">
       <SelectTrigger className="md:w-44">
         <SelectValue placeholder="Product Status" />
       </SelectTrigger>
       <SelectContent className="">
-        <SelectItem value="live" onClick={() => handleActiveTab("live")}>
+        <SelectItem value="all" onClick={() => handleStatusSelect("")}>
+          All
+        </SelectItem>
+        <SelectItem value="active" onClick={() => handleStatusSelect("active")}>
           Live
         </SelectItem>
-        <SelectItem value="pending" onClick={() => handleActiveTab("pending")}>
+        <SelectItem value="suspended" onClick={() => handleStatusSelect("suspended")}>
+          Suspended
+        </SelectItem>
+        <SelectItem value="pending" onClick={() => handleStatusSelect("pending")}>
           Pending
         </SelectItem>
         <SelectItem
           value="deleted"
-          onClick={() => handleActiveTab("deleted")}
+          onClick={() => handleStatusSelect("deleted")}
         >
           Deleted request
         </SelectItem>

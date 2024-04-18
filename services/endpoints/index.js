@@ -40,3 +40,9 @@ export const GET_VENDORS_DETAILS = (userId) =>
 export const GET_NOTIFICATIONS = "/admin/notifications";
 export const READ_NOTIFICATIONS = (notificationId) =>
   `/admin/notifications/${notificationId}`;
+
+// PRODUCTS
+export const GET_PRODUCTS = (status, type, pageParam, limit) =>
+  `/admin/products?${status ? `status=${status}&` : ""}${
+    type ? `type=${type}&` : ""
+  }page=${pageParam || 0}&limit=${limit || 20}`;
