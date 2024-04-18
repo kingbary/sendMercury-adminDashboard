@@ -39,7 +39,6 @@ export default function MobileTable({ activeTab }) {
     useListSuccessfulOrders();
   const pendingOrderData = pendingData?.data.data.orders;
   const successfulOrderData = successfulData?.data.data.orders;
-  console.log(pendingOrderData);
   return (
     <>
       {activeTab === "awaitingDelivery" && (

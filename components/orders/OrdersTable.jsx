@@ -32,9 +32,7 @@ export default function OrdersTable({ activeTab }) {
   const { data: successfulData, isError: isSuccessfulDataError } =
     useListSuccessfulOrders();
   const pendingOrderData = pendingData?.data.data.orders;
-  // console.log(pendingData)
   const successfulOrderData = successfulData?.data.data.orders;
-  console.log(successfulData);
 
   const { mutate } = useSetSuccessful();
   const { mutate: shippedMutate } = useSetShipped();

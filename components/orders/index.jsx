@@ -32,10 +32,10 @@ export default function OrdersPage({}) {
     setTab(selectedTab);
   };
 
-  const {mutation, isPending} = useSetSuccessful()
-   const handleSetSuccessful = () =>{
-    mutation(data)
-   }
+  const { mutation, isPending } = useSetSuccessful();
+  const handleSetSuccessful = () => {
+    mutation(data);
+  };
 
   const { data, isError } = useListPendingOrders();
   const storeInformation = data?.data.data;
@@ -74,18 +74,8 @@ export default function OrdersPage({}) {
       <div className="mt-8 w-full mb-4 flex flex-col md:flex-row justify-between pl-4 pr-6">
         <DeliveryStatusSelect handleActiveTab={setActiveTab} />
         <div className="flex justify-center">
-          <CreateOrderModal
-            handleCreateOrderModal={handleCreateOrderModal}
-            isCreateOrderModalOpen={isCreateOrderModalOpen}
-          />
+          <CreateOrderModal />
         </div>
-        <Button
-          variant="default"
-          onClick={handleCreateOrderModal}
-          className="hidden md:block"
-        >
-          Create new order
-        </Button>
       </div>
       <Container>
         <OrdersTable activeTab={activeTab} />
