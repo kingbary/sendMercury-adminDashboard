@@ -14,10 +14,13 @@ import {
 import ProductStatusSelect from "../universal/ProductStatusSelect";
 import ProductTypeSelect from "../universal/ProductTypeSelect";
 import useListProducts from "@/hooks/queries/useListProducts";
+import useGetProductMetricData from "@/hooks/queries/useGetProductMetricData";
 
 export default function Products() {
   const [productTypeSelect, setProductTypeSelect] = useState("");
   const [statusSelect, setStatusSelect] = useState("");
+  const { data: productMetric } = useGetProductMetricData();
+  const productMetricData = productMetric?.data.data[0];
   const { data, isLoading, refetch } = useListProducts({
     status: statusSelect !== "" && statusSelect,
     type: productTypeSelect,
@@ -31,9 +34,9 @@ export default function Products() {
   return (
     <>
       <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mx-4">
-        <InnerCard cardHeading={"Total Products"} value={"730,650"} />
-        <InnerCard cardHeading={"Pending Products"} value={"35,400"} />
-        <InnerCard cardHeading={"Live Products"} value={"230"} />
+        <InnerCard cardHeading={"Total Products"} value={productMetricData?.total.total} />
+        <InnerCard cardHeading={"Pending Products"} value={productMetricData?.pending.total} />
+        <InnerCard cardHeading={"Live Products"} value={productMetricData?.active.total} />
       </div>
       <div className="mx-4 my-8 md:m-8">
         <p className="mb-2">Filter by</p>
@@ -48,7 +51,7 @@ export default function Products() {
         statusSelect={statusSelect}
         productTypeSelect={productTypeSelect}
       />
-      <Pagination className={'mt-10'}>
+      <Pagination className={"mt-10"}>
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious href="#" />

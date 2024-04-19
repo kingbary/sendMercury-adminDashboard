@@ -55,7 +55,7 @@ export default function ProductDetails({ productsData, isLoading }) {
               })}
             </>
           ) : (
-            <div className="text-center">
+            <div className="text-center hidden md:block">
               {isLoading ? (
                 <PulseLoader color="#4d4d4d" />
               ) : (
@@ -69,56 +69,53 @@ export default function ProductDetails({ productsData, isLoading }) {
         <>
           {productsData.map((data) => {
             return (
-              <>
-                <div className="md:hidden mx-4 shadow rounded-[16px] py-4 px-2 flex items-center mb-4">
-                  <Link
-                    href={`/products/${data?.id}`}
-                    key={data?.id}
-                    className="w-full"
-                  >
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-4 h-4 rounded-full ${
-                            data?.status === "active"
-                              ? "bg-[#219653]"
-                              : data?.status === "pending"
-                              ? "bg-[#F79E1B]"
-                              : "bg-[#EB001B]"
-                          }`}
-                        ></div>
-                        <div>
-                          <p className="font-medium">{data?.productName}</p>
-                          <p className="text-xs text-midGray">
-                            {data?.vendorName}
-                          </p>
-                        </div>
-                      </div>
+              <div
+                className="md:hidden mx-4 shadow rounded-[16px] py-4 px-2 flex items-center mb-4"
+                key={data?.id}
+              >
+                <Link href={`/products/${data?.id}`} className="w-full">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-4 h-4 rounded-full ${
+                          data?.status === "active"
+                            ? "bg-[#219653]"
+                            : data?.status === "pending"
+                            ? "bg-[#F79E1B]"
+                            : "bg-[#EB001B]"
+                        }`}
+                      ></div>
                       <div>
-                        <div className="flex items-center gap-3">
-                          <div className="flex flex-col items-end">
-                            <p className="font-medium">{data?.price}</p>
-                            <p className="text-xs text-midGray">{data?.type}</p>
-                          </div>
-                          <div className="-rotate-90 w-[18px] h-[18px] border-[0.75px] rounded-[3px] border-neutral-200">
-                            <Image
-                              src={"/assets/icons/arrow-down-2.svg"}
-                              width={30}
-                              height={30}
-                              alt=""
-                            />
-                          </div>
+                        <p className="font-medium">{data?.productName}</p>
+                        <p className="text-xs text-midGray">
+                          {data?.vendorName}
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex flex-col items-end">
+                          <p className="font-medium">{data?.price}</p>
+                          <p className="text-xs text-midGray">{data?.type}</p>
+                        </div>
+                        <div className="-rotate-90 w-[18px] h-[18px] border-[0.75px] rounded-[3px] border-neutral-200">
+                          <Image
+                            src={"/assets/icons/arrow-down-2.svg"}
+                            width={30}
+                            height={30}
+                            alt=""
+                          />
                         </div>
                       </div>
                     </div>
-                  </Link>
-                </div>
-              </>
+                  </div>
+                </Link>
+              </div>
             );
           })}
         </>
       ) : (
-        <div className="text-center">
+        <div className="text-center md:hidden">
           {isLoading ? (
             <PulseLoader color="#4d4d4d" />
           ) : (

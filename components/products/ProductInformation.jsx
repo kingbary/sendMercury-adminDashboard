@@ -7,8 +7,15 @@ import InputContainer from "./InputContainer";
 import { Button } from "../ui/button";
 import { IoMdArrowDropdown } from "react-icons/io";
 import LabelCard from "./LabelCard";
+import useGetIndividualProduct from "@/hooks/queries/useGetIndividualProduct";
+import { useParams } from "next/navigation";
 
 export default function ProductInformation() {
+  const param = useParams();
+  const productId = param.productId;
+  // const { data, isLoading } = useGetIndividualProduct(productId);
+  // console.log(productId);
+  // console.log(data?.data);
   const [count, setCount] = useState(1);
   const [count2, setCount2] = useState(1);
   const handleIncrement = () => {
@@ -29,6 +36,7 @@ export default function ProductInformation() {
       setCount2((prevCount) => prevCount - 1);
     }
   };
+
   return (
     <div className="sm:px-6">
       <Link

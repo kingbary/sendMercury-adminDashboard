@@ -42,7 +42,10 @@ export const READ_NOTIFICATIONS = (notificationId) =>
   `/admin/notifications/${notificationId}`;
 
 // PRODUCTS
+export const PRODUCT_METRIC = "/admin/products/product-metric";
 export const GET_PRODUCTS = (status, type, pageParam, limit) =>
   `/admin/products?${status ? `status=${status}&` : ""}${
     type ? `type=${type}&` : ""
   }page=${pageParam || 0}&limit=${limit || 20}`;
+export const GET_INDIVIDUAL_PRODUCT = (productId) =>
+  `/admin/products/${productId}`;
