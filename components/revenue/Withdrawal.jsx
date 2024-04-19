@@ -7,6 +7,7 @@ import YearSelect from "../universal/YearSelect";
 import Container from "../universal/Container";
 import { useState } from "react";
 import WithdrawalTable from "./WithdrawalTable";
+import MobileWithdrawalTable from "./MobileWithdrawalTable";
 
 export default function Withdrawal() {
   let [activeTab, setActiveTab] = useState("2023");
@@ -30,19 +31,28 @@ export default function Withdrawal() {
         </div>
         Back
       </Link>
-      <div>
+      <div className="p-4">
         <p className="font-bold">Withdrawals</p>
         <p>You have {"20"} pending withdrawals awaiting approval</p>
       </div>
       <div className="flex flex-col justify-between md:flex-row gap-6 p-3 mb-3">
-        <div className="flex gap-2">
+        <div className="flex flex-col md:flex-row gap-2">
           <PeriodSelect handleActiveTab={setActiveTab} />
           <YearSelect handleActiveTab={setActiveTab} />
         </div>
+        <div className="flex flex-col md:flex-row gap-4 mr-6">
+          <div className="flex gap-3">
+            <div className="bg-primaryBlue h-6 w-6 rounded-full"></div>Active
+            Vendors
+          </div>
+          <div className="flex gap-3">
+            <div className="bg-red-500 h-6 w-6 rounded-full"></div>Suspended
+            Vendors
+          </div>
+        </div>
       </div>
-      <Container>
-        <WithdrawalTable/>
-      </Container>
+      <WithdrawalTable />
+      <MobileWithdrawalTable />
     </div>
   );
 }

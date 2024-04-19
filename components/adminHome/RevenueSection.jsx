@@ -12,7 +12,7 @@ export default function RevenueSection() {
   const [activeTab, setActiveTab] = useState("2023");
 
   return (
-    <Container>
+    <Container className="mx-4">
       <div className="flex flex-col gap-6">
         <div>
           <p className="text-[#333] text-xl font-extrabold">

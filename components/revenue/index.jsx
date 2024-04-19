@@ -23,9 +23,7 @@ export default function Revenue() {
   };
   return (
     <>
-      <div className="ml-8 font-extrabold text-2xl w-full mb-4">
-        Revenue
-      </div>
+      <div className="ml-8 font-extrabold text-2xl w-full mb-4">Sales</div>
       <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mx-8">
         <InnerCard
           cardHeading={"Amazon"}
@@ -56,49 +54,25 @@ export default function Revenue() {
           percentage
         />
       </div>
-      <div className="mt-6 ml-8 font-extrabold text-2xl w-full mb-4">Sales</div>
-      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mx-8">
-        <InnerCard
-          cardHeading={"Amazon"}
-          value={"₦1,103,789.00"}
-          percentageIncrease={"29.09"}
-          increaseAmount={"+ ₦1,000,000"}
-          percentage
-        />
-        <InnerCard
-          cardHeading={"Jumia"}
-          value={"₦1,103,789.00"}
-          percentageIncrease={"29.09"}
-          increaseAmount={"- ₦1,000,000"}
-          percentage
-        />
-        <InnerCard
-          cardHeading={"Ebay"}
-          value={"₦1,103,789.00"}
-          percentageIncrease={"29.09"}
-          increaseAmount={"+100"}
-          percentage
-        />
-        <InnerCard
-          cardHeading={"Konga"}
-          value={"₦1,103,789.00"}
-          percentageIncrease={"29.09"}
-          increaseAmount={"+100"}
-          percentage
-        />
-      </div>
-      <Container className={"flex flex-col gap-2 md:flex-row justify-between mx-8"}>
+      <Container
+        className={"flex flex-col gap-2 md:flex-row justify-between mx-8"}
+      >
         <div>
           <p className="font-bold">Withdrawals</p>
           <p>You have {"20"} pending withdrawals awaiting approval</p>
         </div>
-        <Link href={'/revenue/withdrawal'} className="bg-primaryBlue inline-flex items-center justify-center text-neutral-50 hover:bg-primaryBlue/90 h-10 px-4 py-2 whitespace-nowrap rounded-md text-sm font-medium">View withdrawal requests</Link>
+        <Link
+          href={"/revenue/withdrawal"}
+          className="bg-primaryBlue inline-flex items-center justify-center text-neutral-50 hover:bg-primaryBlue/90 h-10 px-4 py-2 whitespace-nowrap rounded-md text-sm font-medium"
+        >
+          View withdrawal requests
+        </Link>
       </Container>
       <div className="flex gap-6 mx-4 my-8 md:m-8">
         <StoreSelect />
       </div>
       <RevenueSection activeTab={activeTab} />
-      <Container>
+      <Container className="mx-4">
         <div className="flex flex-col gap-6">
           <div>
             <p className="text-[#333] text-xl font-semibold">
@@ -107,7 +81,7 @@ export default function Revenue() {
             <p className="text-base leading-normal">April 2023 Report</p>
           </div>
           <div className="flex flex-col justify-between md:flex-row gap-6 p-3 mb-3">
-            <div className="flex gap-2">
+            <div className="flex flex-col md:flex-row gap-2">
               <PeriodSelect handleActiveTab={setActiveTab} />
               <YearSelect handleActiveTab={setActiveTab} />
             </div>
