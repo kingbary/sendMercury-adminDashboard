@@ -56,8 +56,7 @@ export default function Suspend() {
         },
         data: vendorSuspendData,
       })
-      .then((response) => {
-        console.log("Delete request successful:", response);
+      .then(() => {
         queryClient.invalidateQueries({
           queryKey: [`get-vendors-details, ${userId}`],
         });
@@ -73,7 +72,6 @@ export default function Suspend() {
     <div className="px-4 w-full">
       <Dialog>
         <DialogTrigger aschild="true">
-          <div>
             <Button
               variant="destructive"
               type="button"
@@ -81,7 +79,6 @@ export default function Suspend() {
             >
               Suspend Vendor
             </Button>
-          </div>
         </DialogTrigger>
         {!confirmationModal && (
           <DialogContent>
@@ -109,7 +106,7 @@ export default function Suspend() {
                       required: "The reason for suspension is required",
                     })}
                     cols="30"
-                    rows="10"
+                    rows="5"
                     spellCheck
                     placeholder="Enter your reason for suspending vendor"
                   ></textarea>
@@ -214,7 +211,7 @@ export default function Suspend() {
                         required: "The reason for suspension is required",
                       })}
                       cols="30"
-                      rows="10"
+                      rows="5"
                       spellCheck
                       placeholder="Enter your reason for suspending vendor"
                     ></textarea>

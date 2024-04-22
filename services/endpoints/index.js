@@ -46,6 +46,12 @@ export const PRODUCT_METRIC = "/admin/products/product-metric";
 export const GET_PRODUCTS = (status, type, pageParam, limit) =>
   `/admin/products?${status ? `status=${status}&` : ""}${
     type ? `type=${type}&` : ""
-  }page=${pageParam || 0}&limit=${limit || 20}`;
+  }page=${pageParam || 1}&limit=${limit || 20}`;
 export const GET_INDIVIDUAL_PRODUCT = (productId) =>
   `/admin/products/${productId}`;
+
+// REVENUE
+export const GET_WITHDRAWAL = (pageParam, limit) =>
+  `/admin/withdrawals?page=${pageParam || 1}&limit=${
+    limit || 20
+  }&status&from=2024-02-05&to=`;

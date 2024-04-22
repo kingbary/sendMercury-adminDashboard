@@ -71,7 +71,6 @@ export default function ActivateVendor() {
     <div className="px-4 w-full">
       <Dialog openDialog={open} onDialogOpenChange={setOpen}>
         <DialogTrigger aschild="true">
-          <div>
             <Button
               variant="default"
               type="button"
@@ -79,7 +78,6 @@ export default function ActivateVendor() {
             >
               Reactivate Vendor
             </Button>
-          </div>
         </DialogTrigger>
         {!confirmationModal && (
           <DialogContent>

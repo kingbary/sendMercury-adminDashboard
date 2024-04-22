@@ -69,7 +69,6 @@ export default function CreateOrderModal({
     <div>
       <Dialog>
         <DialogTrigger aschild="true">
-          <div>
             <Button
               variant="default"
               type="button"
@@ -77,7 +76,6 @@ export default function CreateOrderModal({
             >
               Create new Order
             </Button>
-          </div>
         </DialogTrigger>
         {!confirmationModal && (
           <DialogContent>

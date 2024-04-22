@@ -4,10 +4,10 @@ import Link from "next/link";
 // import React, { useState } from "react";
 import PeriodSelect from "../universal/PeriodSelect";
 import YearSelect from "../universal/YearSelect";
-import Container from "../universal/Container";
 import { useState } from "react";
 import WithdrawalTable from "./WithdrawalTable";
 import MobileWithdrawalTable from "./MobileWithdrawalTable";
+import useListWithdrawal from "@/hooks/queries/useGetWithdrawal";
 
 export default function Withdrawal() {
   let [activeTab, setActiveTab] = useState("2023");
@@ -15,6 +15,12 @@ export default function Withdrawal() {
   const handleTabClick = (selectedTab) => {
     setTab(selectedTab);
   };
+
+  const { data, isLoading } = useListWithdrawal({
+    pageParam: 1,
+    limit: 20,
+  });
+  const transactions = data?.data?.data?.transactions;
   return (
     <div className="sm:px-6">
       <Link
@@ -51,8 +57,8 @@ export default function Withdrawal() {
           </div>
         </div>
       </div>
-      <WithdrawalTable />
-      <MobileWithdrawalTable />
+      <WithdrawalTable transactions={transactions} />
+      <MobileWithdrawalTable transactions={transactions} />
     </div>
   );
 }

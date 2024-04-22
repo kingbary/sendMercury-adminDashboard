@@ -13,9 +13,9 @@ import { useParams } from "next/navigation";
 export default function ProductInformation() {
   const param = useParams();
   const productId = param.productId;
-  // const { data, isLoading } = useGetIndividualProduct(productId);
-  // console.log(productId);
-  // console.log(data?.data);
+  const { data, isLoading } = useGetIndividualProduct(productId);
+  console.log(productId);
+  console.log(data);
   const [count, setCount] = useState(1);
   const [count2, setCount2] = useState(1);
   const handleIncrement = () => {
