@@ -41,7 +41,7 @@ export default function NavBar({ isSidebarOpen, toggleSideBar }) {
             alt="notification icon"
           />
           <div className="flex gap-[5px] md:gap-[9px] items-center">
-            <Image src="/assets/icons/ava.svg" width={36} height={36} alt="" />
+            <Image src="/assets/icons/user.svg" width={36} height={36} alt="" />
             <p className="flex gap-1 text-base font-medium">
               Ized <span className="hidden lg:block">Uanikhehi</span>
             </p>
