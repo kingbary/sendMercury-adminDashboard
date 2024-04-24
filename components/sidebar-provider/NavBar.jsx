@@ -1,7 +1,10 @@
+import { useAdminData } from "@/app/provider/AdminDataProvider";
 import Image from "next/image";
 import React from "react";
 
 export default function NavBar({ isSidebarOpen, toggleSideBar }) {
+  const { adminData } = useAdminData();
+  console.log(adminData);
   return (
     <>
       <nav
@@ -22,7 +25,7 @@ export default function NavBar({ isSidebarOpen, toggleSideBar }) {
         <div className="hidden lg:block relative z-10 lg:ml-[15%] xl:ml-[25%]">
           <Image
             className="absolute left-2 top-[30%]"
-            src="/assets/icons/search.svg"
+            src={"/assets/icons/search.svg"}
             width={13}
             height={13}
             alt="search icon"
@@ -41,9 +44,26 @@ export default function NavBar({ isSidebarOpen, toggleSideBar }) {
             alt="notification icon"
           />
           <div className="flex gap-[5px] md:gap-[9px] items-center">
-            <Image src="/assets/icons/user.svg" width={36} height={36} alt="" />
+            {adminData?.avatar ? (
+              <Image
+                src={`https://${adminData?.avatar}`}
+                width={30}
+                height={30}
+                alt=""
+              />
+            ) : (
+              <Image
+                src="/assets/icons/user.svg"
+                width={30}
+                height={30}
+                alt=""
+              />
+            )}
             <p className="flex gap-1 text-base font-medium">
-              Ized <span className="hidden lg:block">Uanikhehi</span>
+              <span className="hidden lg:block">
+                {adminData?.fullName?.split(" ")[0]}{" "}
+              </span>
+              <span>{adminData?.fullName?.split(" ")[1]}</span>
             </p>
             <Image
               src="/assets/icons/arrow-down-2.svg"

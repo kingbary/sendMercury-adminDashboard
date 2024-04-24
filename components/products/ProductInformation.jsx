@@ -38,9 +38,6 @@ export default function ProductInformation() {
   }, []);
 
   useEffect(() => {
-    const item = localStorage.getItem("token");
-    setToken(item);
-
     const getProductData = async () => {
       await axios
         .get(`${baseUrl}/admin/products/${productId}`, {

@@ -8,6 +8,12 @@ const nextConfig = {
         port: "",
         pathname: "/dplxh8dad/image/upload/**",
       },
+      {
+        protocol: "https",
+        hostname: "www.icon.ico",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };
