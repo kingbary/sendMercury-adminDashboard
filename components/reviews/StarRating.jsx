@@ -14,9 +14,9 @@ export default function StarRating({ setRating, rating }) {
           className="focus:outline-none"
         >
           {index <= rating ? (
-            <FaStar color="#FFD700" size={30} />
+            <FaStar color="#FFD700" size={25} />
           ) : (
-            <FaRegStar color="#D4D4D4" size={30} />
+            <FaRegStar color="#D4D4D4" size={25} />
           )}
         </button>
       ))}

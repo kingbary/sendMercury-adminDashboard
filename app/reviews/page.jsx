@@ -18,20 +18,10 @@ export default function Reviews() {
   const reviews = data?.data.data.reviews;
   return (
     <DashboardLayout>
-      <div className="flex justify-between mx-4 md:mx-8">
+      <div className="flex flex-col md:flex-row md:justify-between mx-4 md:mx-8">
         <p className="text-2xl font-semibold">Reviews</p>
         <div>
-          <Button
-            variant="default"
-            onClick={handleAddReviewModal}
-            className="hidden md:block"
-          >
-            Add New Review
-          </Button>
-          <AddReviewModal
-            handleAddReviewModal={handleAddReviewModal}
-            isAddReviewModalOpen={isAddReviewModalOpen}
-          />
+          <AddReviewModal />
         </div>
       </div>
       <Container className={"mx-4"}>
