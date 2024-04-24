@@ -22,7 +22,10 @@ export default function WithdrawalTable({ transactions }) {
             <>
               {transactions.map((transaction) => {
                 return (
-                  <div className="mb-6 py-2 border-b border-neutral-300 w-full">
+                  <div
+                    className="mb-6 py-2 border-b border-neutral-300 w-full"
+                    key={transaction?.id}
+                  >
                     <div className="grid grid-cols-6 text-sm pl-6 w-full">
                       <p className="text-left">{transaction?.shopName}</p>
                       <p className="text-center">{transaction?.vendorName}</p>

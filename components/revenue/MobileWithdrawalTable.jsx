@@ -11,7 +11,10 @@ export default function MobileWithdrawalTable({ transactions }) {
         <>
           {transactions.map((transaction) => {
             return (
-              <div className="p-4 md:hidden border-b border-neutral-300">
+              <div
+                className="p-4 md:hidden border-b border-neutral-300"
+                key={transaction?.id}
+              >
                 <div className="flex justify-between">
                   <div>
                     <p
