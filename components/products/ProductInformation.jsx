@@ -20,7 +20,8 @@ export default function ProductInformation() {
   const [productData, setProductData] = useState({});
   const [token, setToken] = useState("");
   const [viewMore, setViewMore] = useState(false);
-  const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
+  // const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
+  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
 
   const handleIncrement2 = () => {
     setCount2((prevCount) => prevCount + 1);
@@ -277,7 +278,10 @@ export default function ProductInformation() {
                               <>
                                 {variant?.images.map((imageSrc) => {
                                   return (
-                                    <div className="flex gap-2 w-full" key={imageSrc}>
+                                    <div
+                                      className="flex gap-2 w-full"
+                                      key={imageSrc}
+                                    >
                                       <Image
                                         src={imageSrc}
                                         width={40}
