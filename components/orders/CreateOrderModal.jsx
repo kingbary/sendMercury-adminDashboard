@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -23,6 +23,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import axios from "axios";
+import { toast } from "sonner";
 
 export default function CreateOrderModal({
   handleCreateOrderModal,
@@ -38,51 +39,53 @@ export default function CreateOrderModal({
   } = useForm({ mode: "all" });
   const { data, isError } = useGetStores();
   const storeOption = data?.data.data.stores;
-  const { mutate, isPending } = useCreateOrder();
+  // const { mutate, } = useCreateOrder();
+  const [token, setToken] = useState("");
 
   // const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
   const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
+  useEffect(() => {
+    const authToken = localStorage.getItem("token");
+    setToken(authToken);
+  }, []);
 
   const onSubmit = async (data) => {
     const createdAt = new Date().toISOString();
-    const authToken = localStorage.getItem("token");
-    axios
-      .post(`${baseUrl}/admin/orders`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-        data: createdAt,
-      })
-      .then((response) => {
-        console.log("Order created successful:", response);
-        // queryClient.invalidateQueries({
-        //   queryKey: [`get-vendors-details, ${userId}`],
-        // });
-        setConfirmationModal(true);
-      })
-      .catch((error) => {
-        console.error("Error creating order:", error);
-        toast.error(`${error}`);
-      });
+    try {
+      (data.createdAt = createdAt),
+        await axios.post(`${baseUrl}/admin/orders`, data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      setConfirmationModal(true);
+    } catch (error) {
+      toast.error(`${error.response.data.message}`);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setConfirmationModal(false);
+    reset();
   };
 
   return (
     <div>
       <Dialog>
         <DialogTrigger aschild="true">
-            <Button
-              variant="default"
-              type="button"
-              className="mt-8 hidden md:block"
-            >
-              Create new Order
-            </Button>
+          <Button
+            variant="default"
+            type="button"
+            className="mt-8 hidden md:block"
+          >
+            Create new Order
+          </Button>
         </DialogTrigger>
         {!confirmationModal && (
           <DialogContent>
             <DialogHeader className="flex flex-col items-center py-1">
               <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-                <div className="flex flex-col w-full mb-6">
+                <div className="flex flex-col w-full mb-3">
                   <p className="text-2xl text-center mb-2">Create new order</p>
                   <label htmlFor="skuNumber">SKU Number</label>
                   <input
@@ -100,7 +103,7 @@ export default function CreateOrderModal({
                     </p>
                   )}
                 </div>
-                <div className="flex flex-col w-full mb-6">
+                <div className="flex flex-col w-full mb-3">
                   <label htmlFor="orderQty">Order Quantity</label>
                   <input
                     type="text"
@@ -117,7 +120,7 @@ export default function CreateOrderModal({
                     </p>
                   )}
                 </div>
-                <div className="flex flex-col w-full mb-6">
+                <div className="flex flex-col w-full mb-3">
                   <label htmlFor="storeId">Store Name</label>
                   <select
                     name="storeId"
@@ -145,7 +148,7 @@ export default function CreateOrderModal({
                     </p>
                   )}
                 </div>
-                <div className="flex flex-col w-full mb-6">
+                <div className="flex flex-col w-full mb-3">
                   <label htmlFor="address">Delivery Address</label>
                   <input
                     type="text"
@@ -164,8 +167,8 @@ export default function CreateOrderModal({
                 </div>
                 <div className="flex flex-col items-center gap-4">
                   <Button variant="default" type="submit">
-                    {isPending ? (
-                      <BeatLoader color="#0032C8" />
+                    {isSubmitting ? (
+                      <BeatLoader color="#ffffff" size={10} />
                     ) : (
                       "Create order"
                     )}
@@ -174,9 +177,7 @@ export default function CreateOrderModal({
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => {
-                        reset();
-                      }}
+                      onClick={handleCloseModal}
                     >
                       Close
                     </Button>
@@ -199,7 +200,7 @@ export default function CreateOrderModal({
             </p>
             <DialogClose>
               <div>
-                <Button onClick={() => setFormStep(false)} variant="default">
+                <Button onClick={handleCloseModal} variant="default">
                   Done
                 </Button>
               </div>
@@ -221,7 +222,7 @@ export default function CreateOrderModal({
               </DrawerTitle>
               <DrawerDescription>
                 <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-                  <div className="flex flex-col w-full mb-6">
+                  <div className="flex flex-col w-full mb-3">
                     <label htmlFor="skuNumber">SKU Number</label>
                     <input
                       type="text"
@@ -239,7 +240,7 @@ export default function CreateOrderModal({
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col w-full mb-6">
+                  <div className="flex flex-col w-full mb-3">
                     <label htmlFor="orderQty">Order Quantity</label>
                     <input
                       type="text"
@@ -256,7 +257,7 @@ export default function CreateOrderModal({
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col w-full mb-6">
+                  <div className="flex flex-col w-full mb-3">
                     <label htmlFor="storeId">Store Name</label>
                     <select
                       name="storeId"
@@ -284,7 +285,7 @@ export default function CreateOrderModal({
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col w-full mb-6">
+                  <div className="flex flex-col w-full mb-3">
                     <label htmlFor="address">Delivery Address</label>
                     <input
                       type="text"
@@ -301,7 +302,7 @@ export default function CreateOrderModal({
                       </p>
                     )}
                   </div>
-                  {/* <div className="flex flex-col w-full mb-6">
+                  {/* <div className="flex flex-col w-full mb-3">
             <label htmlFor="time">Order Time</label>
             <input
               type="text"
@@ -320,8 +321,8 @@ export default function CreateOrderModal({
           </div> */}
                   <div className="flex flex-col items-center gap-4">
                     <Button variant="default" type="submit">
-                      {isPending ? (
-                        <BeatLoader color="#0032C8" />
+                      {isSubmitting ? (
+                        <BeatLoader color="#ffffff" size={10} />
                       ) : (
                         "Create order"
                       )}
@@ -353,7 +354,7 @@ export default function CreateOrderModal({
             </p>
             <DrawerClose>
               <Button
-                onClick={() => setConfirmationModal(false)}
+                onClick={handleCloseModal}
                 variant="default"
               >
                 Done
