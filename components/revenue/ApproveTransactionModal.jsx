@@ -33,7 +33,8 @@ export default function ApproveTransactionModal({ transactionId }) {
   //     formState: { isSubmitting },
   //     reset,
   //   } = useForm({ mode: "all" });
-  const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
+  // const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
+  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
   useEffect(() => {
     const item = localStorage.getItem("token");
     setToken(item);

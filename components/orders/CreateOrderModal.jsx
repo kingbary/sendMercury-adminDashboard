@@ -40,7 +40,8 @@ export default function CreateOrderModal({
   const storeOption = data?.data.data.stores;
   const { mutate, isPending } = useCreateOrder();
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
+  // const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
+  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
 
   const onSubmit = async (data) => {
     const createdAt = new Date().toISOString();

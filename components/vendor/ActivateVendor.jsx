@@ -33,7 +33,8 @@ export default function ActivateVendor() {
   const queryClient = useQueryClient();
   const params = useParams();
   const userId = params.vendorId;
-  const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
+  // const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
+  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
   const {
     register,
     handleSubmit,
@@ -71,13 +72,13 @@ export default function ActivateVendor() {
     <div className="px-4 w-full">
       <Dialog openDialog={open} onDialogOpenChange={setOpen}>
         <DialogTrigger aschild="true">
-            <Button
-              variant="default"
-              type="button"
-              className="font-semibold mt-8 hidden md:block"
-            >
-              Reactivate Vendor
-            </Button>
+          <Button
+            variant="default"
+            type="button"
+            className="font-semibold mt-8 hidden md:block"
+          >
+            Reactivate Vendor
+          </Button>
         </DialogTrigger>
         {!confirmationModal && (
           <DialogContent>

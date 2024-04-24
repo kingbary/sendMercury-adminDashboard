@@ -34,7 +34,8 @@ export default function Suspend() {
 
   const params = useParams();
   const userId = params.vendorId;
-  const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
+  // const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
+  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
   const {
     register,
     handleSubmit,
@@ -72,13 +73,13 @@ export default function Suspend() {
     <div className="px-4 w-full">
       <Dialog>
         <DialogTrigger aschild="true">
-            <Button
-              variant="destructive"
-              type="button"
-              className="font-semibold mt-8 hidden md:block"
-            >
-              Suspend Vendor
-            </Button>
+          <Button
+            variant="destructive"
+            type="button"
+            className="font-semibold mt-8 hidden md:block"
+          >
+            Suspend Vendor
+          </Button>
         </DialogTrigger>
         {!confirmationModal && (
           <DialogContent>
