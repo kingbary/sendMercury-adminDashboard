@@ -4,7 +4,6 @@ import React from "react";
 
 export default function NavBar({ isSidebarOpen, toggleSideBar }) {
   const { adminData } = useAdminData();
-  console.log(adminData);
   return (
     <>
       <nav

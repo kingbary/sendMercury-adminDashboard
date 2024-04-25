@@ -11,6 +11,7 @@ import { redirect, useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
 import VetProduct from "./VetProduct";
+import AddProductDetailsModal from "./AddProductDetailsModal";
 
 export default function ProductInformation() {
   const param = useParams();
@@ -37,27 +38,32 @@ export default function ProductInformation() {
     setToken(item);
   }, []);
 
+  // console.log(token)
+
   useEffect(() => {
     const getProductData = async () => {
-      await axios
-        .get(`${baseUrl}/admin/products/${productId}`, {
-          headers: {
-            Authorization: `Bearer ${item}`,
-          },
-        })
-        .then((response) => {
-          const data = response.data.data;
-          setProductData(data);
-        })
-        .catch((error) => {
-          toast.error(`Error encountered fetching product data : ${error}`);
-        });
+      try {
+        const response = await axios.get(
+          `${baseUrl}/admin/products/${productId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = response.data.data;
+        setProductData(data);
+      } catch (error) {
+        toast.error(`${error.response.data.message}`);
+      }
     };
 
-    getProductData();
-  }, []);
+    if (token) {
+      getProductData();
+    }
+  }, [token]);
 
-  console.log(productData);
+  // console.log(productData);
 
   return (
     <div className="sm:px-6">
@@ -147,27 +153,52 @@ export default function ProductInformation() {
         </div>
 
         <div className="mt-8">
-          <p>Stores (click the store icon to get to the store)</p>
+          <p className="mb-3">
+            Stores{" "}
+            <span className="text-sm">
+              (click the store icon to get to the store)
+            </span>
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="w-full">
-              <InputContainer
-                hasLogo
-                logoSrc="/assets/icons/shopify.png"
-                inputVal={"Add SKU Number"}
-              />
-              <Button variant="outlineBlue" className="mt-2">
-                Add Product Store ID
-              </Button>
+            <div className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
+              <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0">
+                <Image
+                  src={"/assets/icons/shopify.png"}
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <AddProductDetailsModal />
             </div>
-            <div className="w-full">
-              <InputContainer
-                hasLogo
-                logoSrc="/assets/icons/shopify.png"
-                inputVal={"Add SKU Number"}
-              />
-              <Button variant="outlineBlue" className="mt-2">
-                Add Product Store ID
-              </Button>
+            <div className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
+              <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0">
+                <Image
+                  src={"/assets/icons/shopify.png"}
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <AddProductDetailsModal />
+            </div>
+            <div className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
+              <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0">
+                <Image
+                  src={"/assets/icons/shopify.png"}
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <AddProductDetailsModal />
+            </div>
+            <div className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
+              <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0">
+                <Image
+                  src={"/assets/icons/shopify.png"}
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <AddProductDetailsModal />
             </div>
           </div>
         </div>
@@ -342,25 +373,45 @@ export default function ProductInformation() {
                             Stores (click the store icon to get to the store)
                           </p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="w-full">
-                              <InputContainer
-                                hasLogo
-                                logoSrc="/assets/icons/shopify.png"
-                                inputVal={"Add SKU Number"}
-                              />
-                              <Button variant="outlineBlue" className="mt-2">
-                                Add Product Store ID
-                              </Button>
+                            <div className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
+                              <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0">
+                                <Image
+                                  src={"/assets/icons/shopify.png"}
+                                  width={100}
+                                  height={100}
+                                />
+                              </div>
+                              <AddProductDetailsModal />
                             </div>
-                            <div className="w-full">
-                              <InputContainer
-                                hasLogo
-                                logoSrc="/assets/icons/shopify.png"
-                                inputVal={"Add SKU Number"}
-                              />
-                              <Button variant="outlineBlue" className="mt-2">
-                                Add Product Store ID
-                              </Button>
+                            <div className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
+                              <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0">
+                                <Image
+                                  src={"/assets/icons/shopify.png"}
+                                  width={100}
+                                  height={100}
+                                />
+                              </div>
+                              <AddProductDetailsModal />
+                            </div>
+                            <div className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
+                              <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0">
+                                <Image
+                                  src={"/assets/icons/shopify.png"}
+                                  width={100}
+                                  height={100}
+                                />
+                              </div>
+                              <AddProductDetailsModal />
+                            </div>
+                            <div className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
+                              <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0">
+                                <Image
+                                  src={"/assets/icons/shopify.png"}
+                                  width={100}
+                                  height={100}
+                                />
+                              </div>
+                              <AddProductDetailsModal />
                             </div>
                           </div>
                         </div>
