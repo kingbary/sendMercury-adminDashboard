@@ -24,11 +24,13 @@ import axios from "axios";
 import { toast } from "sonner";
 import useGetStores from "@/hooks/queries/useGetStores";
 
-export default function AddProductDetailsModal() {
+export default function AddProductDetailsModal({
+  variantId,
+  storeId,
+  storeName,
+}) {
   const [open, setOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
-
-  const [rating, setRating] = useState(0);
   const [token, setToken] = useState("");
   const [SKU, setSKU] = useState("");
   const {
@@ -40,7 +42,6 @@ export default function AddProductDetailsModal() {
   const { data, isError } = useGetStores();
   const storeOption = data?.data?.data.stores;
 
-  // const { mutate } = useCreateReview();
   const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
 
   useEffect(() => {
@@ -50,26 +51,29 @@ export default function AddProductDetailsModal() {
 
   const onSubmit = async (data) => {
     setSKU(data.sku);
-    // data.rating = rating;
-    // try {
-    //   await axios.post(`${baseUrl}/admin/reviews`, data, {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //     // data: rating,
-    //   });
-    //   setConfirmationModal(true);
-    // } catch (error) {
-    //     toast.error(`${error.response.data.message}`);
-    // }
-    setConfirmationModal(true);
+    data.storeId = storeId;
+    console.log(data);
+    try {
+      await axios.patch(
+        `${baseUrl}/admin/variant-stores/${variantId}/update`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setConfirmationModal(true);
+    } catch (error) {
+      console.error('Error:', error)
+      toast.error(`${error.response.data.message}`);
+    }
   };
 
   const handleCloseModal = () => {
     setConfirmationModal(false);
     reset();
   };
-
   return (
     <div>
       <Dialog>
@@ -89,38 +93,14 @@ export default function AddProductDetailsModal() {
               <form onSubmit={handleSubmit(onSubmit)} className="w-full px-8">
                 <div className="flex flex-col w-full mb-3">
                   <label htmlFor="storeId">Store Name</label>
-                  <select
-                    name="storeId"
-                    {...register("storeId", {
-                      required:
-                        "Store should be the one the order was placed on",
-                    })}
-                    className="border border-neutral200 rounded outline-none py-3 px-4"
-                  >
-                    <option>Select a store</option>
-                    {storeOption ? (
-                      storeOption.map((store) => {
-                        return (
-                          <>
-                            <option value={store.id}>{store.name}</option>
-                          </>
-                        );
-                      })
-                    ) : (
-                      <option>No store available</option>
-                    )}
-                  </select>
-                  {errors.storeId && (
-                    <p className="text-xs text-red-400 font-normal mt-1">
-                      {errors?.storeId.message}
-                    </p>
-                  )}
+                  <div className="border border-neutral200 rounded outline-none py-3 px-4">
+                    {storeName}
+                  </div>
                 </div>
                 <div className="flex flex-col w-full mb-3">
                   <label htmlFor="sku">Product Store ID</label>
                   <input
                     type="text"
-                    name="sku"
                     {...register("sku", {
                       required: "Enter the SKU Number",
                       // minLength: {
@@ -139,19 +119,19 @@ export default function AddProductDetailsModal() {
                   )}
                 </div>
                 <div className="flex flex-col w-full mb-3">
-                  <label htmlFor="customerName">{"Product Url"}</label>
+                  <label htmlFor="customerName">{"Product URL"}</label>
                   <input
                     type="url"
-                    {...register("productUrl", {
+                    {...register("productURL", {
                       required: "Enter the Product URL on this store",
                     })}
                     className="border border-neutral200 rounded outline-none py-3 px-4"
-                    id="productUrl"
-                    placeholder="Paste URL"
+                    id="productURL"
+                    placeholder="example: https://sendmercury.com/my-product"
                   />
-                  {errors.productUrl && (
+                  {errors.productURL && (
                     <p className="text-xs text-red-400 font-normal mt-1">
-                      {errors?.productUrl.message}
+                      {errors?.productURL.message}
                     </p>
                   )}
                 </div>
@@ -200,44 +180,19 @@ export default function AddProductDetailsModal() {
           <DrawerContent>
             <DrawerHeader className="text-left">
               <DrawerDescription>
-                <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+                <form onSubmit={handleSubmit(onSubmit)} className="w-full px-8">
                   <div className="flex flex-col w-full mb-3">
                     <label htmlFor="storeId">Store Name</label>
-                    <select
-                      name="storeId"
-                      {...register("storeId", {
-                        required:
-                          "Store should be the one the order was placed on",
-                      })}
-                      className="border border-neutral200 rounded outline-none py-3 px-4"
-                    >
-                      <option>Select a store</option>
-                      {storeOption ? (
-                        storeOption.map((store) => {
-                          return (
-                            <>
-                              <option value={store.id}>{store.name}</option>
-                            </>
-                          );
-                        })
-                      ) : (
-                        <option>No store available</option>
-                      )}
-                    </select>
-                    {errors.storeId && (
-                      <p className="text-xs text-red-400 font-normal mt-1">
-                        {errors?.storeId.message}
-                      </p>
-                    )}
+                    <div className="border border-neutral200 rounded outline-none py-3 px-4">
+                      {storeName}
+                    </div>
                   </div>
                   <div className="flex flex-col w-full mb-3">
                     <label htmlFor="sku">Product Store ID</label>
                     <input
                       type="text"
-                      name="sku"
                       {...register("sku", {
-                        required:
-                          "The product name will be visible after you’ve inputted ID",
+                        required: "Enter the SKU Number",
                         // minLength: {
                         //   value: 24,
                         //   message: "Store ID have length of 24 characters long",
@@ -245,7 +200,7 @@ export default function AddProductDetailsModal() {
                       })}
                       className="border border-neutral200 rounded outline-none py-3 px-4"
                       id="sku"
-                      placeholder="Enter SKU Number"
+                      placeholder="SKU Number"
                     />
                     {errors.sku && (
                       <p className="text-xs text-red-400 font-normal mt-1">
@@ -254,23 +209,23 @@ export default function AddProductDetailsModal() {
                     )}
                   </div>
                   <div className="flex flex-col w-full mb-3">
-                    <label htmlFor="customerName">{"Product Url"}</label>
+                    <label htmlFor="customerName">{"Product URL"}</label>
                     <input
                       type="url"
-                      {...register("productUrl", {
-                        required: "Enter product URL on this store",
+                      {...register("productURL", {
+                        required: "Enter the Product URL on this store",
                       })}
                       className="border border-neutral200 rounded outline-none py-3 px-4"
-                      id="productUrl"
-                      placeholder="Paste URL"
+                      id="productURL"
+                      placeholder="example: https://sendmercury.com/my-product"
                     />
-                    {errors.productUrl && (
+                    {errors.productURL && (
                       <p className="text-xs text-red-400 font-normal mt-1">
-                        {errors?.productUrl.message}
+                        {errors?.productURL.message}
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col items-center gap-4">
+                  <div className="flex flex-col items-center gap-4 mt-4">
                     <Button variant="default" type="submit">
                       {isSubmitting ? (
                         <BeatLoader color="#ffffff" />

@@ -47,7 +47,7 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="font-nunito relative">
       <SideBarProvider />
-      <main className="bg-[#FAFAFA] min-h-screen lg:ml-[15%] mt-[76px] pb-6 pt-6">
+      <main className="bg-[#FAFAFA] min-h-screen lg:ml-[15%] mt-[133px] md:mt-[73px] pb-6 pt-6">
         {children}
       </main>
     </div>

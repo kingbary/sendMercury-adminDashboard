@@ -19,6 +19,7 @@ export default function ProductInformation() {
   const [count, setCount] = useState(1);
   const [count2, setCount2] = useState(1);
   const [productData, setProductData] = useState({});
+  const [productStores, setProductStores] = useState({});
   const [token, setToken] = useState("");
   const [viewMore, setViewMore] = useState(false);
   // const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
@@ -62,9 +63,28 @@ export default function ProductInformation() {
       getProductData();
     }
   }, [token]);
+  useEffect(() => {
+    const getProductStores = async () => {
+      try {
+        const response = await axios.get(
+          `${baseUrl}/admin/products/${productId}/product-stores`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = response.data.data;
+        setProductStores(data);
+      } catch (error) {
+        toast.error(`${error.response.data.message}`);
+      }
+    };
 
-  // console.log(productData);
-
+    if (token) {
+      getProductStores();
+    }
+  }, [token]);
   return (
     <div className="sm:px-6">
       <Link
@@ -85,26 +105,34 @@ export default function ProductInformation() {
         <div className="flex gap-8 items-end">
           <div>
             <p>Display image</p>
-            <Image
-              src={productData?.thumbnail}
-              width={120}
-              height={120}
-              alt=""
-            />
+            {productData?.thumbnail ? (
+              <Image
+                src={productData?.thumbnail}
+                width={120}
+                height={120}
+                alt=""
+              />
+            ) : (
+              <p>No images</p>
+            )}
           </div>
           <p className="text-primaryBlue font-bold pb-4">Save Image</p>
         </div>
         <div className="mt-8 w-fit justify-end">
           <div>
             <p>Product Images</p>
-            <div className="flex gap-2 w-full">
-              <Image
-                src={productData?.thumbnail}
-                width={40}
-                height={40}
-                alt=""
-              />
-            </div>
+            {productData?.thumbnail ? (
+              <div className="flex gap-2 w-full">
+                <Image
+                  src={productData?.thumbnail}
+                  width={40}
+                  height={40}
+                  alt=""
+                />
+              </div>
+            ) : (
+              <p>No images</p>
+            )}
           </div>
           <p className="text-primaryBlue font-bold py-3 pb-4 text-right">
             Save images
@@ -159,7 +187,7 @@ export default function ProductInformation() {
               (click the store icon to get to the store)
             </span>
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
               <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0">
                 <Image
@@ -196,11 +224,12 @@ export default function ProductInformation() {
                   src={"/assets/icons/shopify.png"}
                   width={100}
                   height={100}
+                  alt=""
                 />
               </div>
               <AddProductDetailsModal />
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="mt-8">
           <p className="font-semibold text-lg">Shipping Locations</p>
@@ -241,7 +270,7 @@ export default function ProductInformation() {
               <p className="font-semibold mb-1">Variants</p>
               {productData?.variants.map((variant) => {
                 return (
-                  <>
+                  <div key={variant?.id}>
                     <button
                       className="flex flex-col gap-6 w-full mb-4"
                       onClick={() => {
@@ -373,51 +402,37 @@ export default function ProductInformation() {
                             Stores (click the store icon to get to the store)
                           </p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
-                              <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0">
-                                <Image
-                                  src={"/assets/icons/shopify.png"}
-                                  width={100}
-                                  height={100}
-                                />
-                              </div>
-                              <AddProductDetailsModal />
-                            </div>
-                            <div className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
-                              <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0">
-                                <Image
-                                  src={"/assets/icons/shopify.png"}
-                                  width={100}
-                                  height={100}
-                                />
-                              </div>
-                              <AddProductDetailsModal />
-                            </div>
-                            <div className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
-                              <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0">
-                                <Image
-                                  src={"/assets/icons/shopify.png"}
-                                  width={100}
-                                  height={100}
-                                />
-                              </div>
-                              <AddProductDetailsModal />
-                            </div>
-                            <div className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
-                              <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0">
-                                <Image
-                                  src={"/assets/icons/shopify.png"}
-                                  width={100}
-                                  height={100}
-                                />
-                              </div>
-                              <AddProductDetailsModal />
-                            </div>
+                            {productStores ? (
+                              <>
+                                {productStores?.map((store) => {
+                                  return (
+                                    <div key={store?.id} className="relative flex justify-center items-center w-full border border-lightGray h-11 rounded-lg">
+                                      <div className="absolute bg-[#8E8EA9] rounded-sm w-11 h-full left-0 overflow-hidden">
+                                        <Image
+                                        className="w-full h-full"
+                                          src={store?.logo}
+                                          width={100}
+                                          height={100}
+                                          alt=""
+                                        />
+                                      </div>
+                                      <AddProductDetailsModal
+                                        variantId={variant?.id}
+                                        storeName={store?.name}
+                                        storeId={store?.id}
+                                      />
+                                    </div>
+                                  );
+                                })}
+                              </>
+                            ) : (
+                              <p>No stores avaialable for the products</p>
+                            )}
                           </div>
                         </div>
                       </div>
                     )}
-                  </>
+                  </div>
                 );
               })}
             </>

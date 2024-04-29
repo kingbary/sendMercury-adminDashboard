@@ -35,9 +35,9 @@ export default function VetProduct() {
           },
         }
       );
-      toast.success("Product has been veted to live!")
+      toast.success("Product has been veted to live!");
     } catch (error) {
-        toast.error(`Error vetting product to live: ${error}`);
+      toast.error(`${error.response.data.message}`);
     }
   };
   return (

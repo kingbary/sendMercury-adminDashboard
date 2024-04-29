@@ -1,20 +1,20 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { MdOutlineWavingHand } from "react-icons/md";
 import InnerCard from "../universal/InnerCard";
 import RevenueSection from "./RevenueSection";
 import ProductSales from "./ProductSales";
 import OrderStatus from "./OrderStatus";
 import BestSelling from "./BestSelling";
-import { useAuth } from "@/hooks/useAuth";
-import { redirect, useRouter } from "next/navigation";
+import { useAdminData } from "@/app/provider/AdminDataProvider";
 
 export default function DashHome() {
+  const { adminData } = useAdminData();
   return (
     <div className="flex flex-col gap-8 md:gap-0 mx-4">
       <div className="flex flex-col gap-1 md:px-4 pb-5">
         <p className="flex gap-2 items-center text-2xl md:text-base">
-          Hello Admin <MdOutlineWavingHand />
+          Hello {adminData?.fullName} <MdOutlineWavingHand />
         </p>
         <p className=" text-base md:text-sm">
           Here&apos;s what is happening on Send Mercury today

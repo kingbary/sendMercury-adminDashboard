@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Container from "../universal/Container";
 import EditProfileModal from "./EditProfileModal";
+import { useAdminData } from "@/app/provider/AdminDataProvider";
 
 export default function Settings() {
   const [avatar, setAvatar] = useState("/assets/images/profile-avatar.png");
+  const { adminData } = useAdminData();
 
   const handleFileChange = (e) => {
     const fileInput = e.target;
@@ -62,26 +64,26 @@ export default function Settings() {
                     <input
                       className="outline-none border border-[#DCDCE4] rounded text-sm py-3 pl-4 w-full"
                       type="email"
-                      placeholder="izeduanikehi@gmail.com"
+                      placeholder={adminData?.email}
                     />
                   </div>
-                  <div className="flex flex-col mb-4">
+                  {/* <div className="flex flex-col mb-4">
                     <label htmlFor="">Password</label>
                     <input
                       className="outline-none border border-[#DCDCE4] rounded text-sm py-3 pl-4 w-full"
                       type="password"
                       placeholder="********"
                     />
-                  </div>
+                  </div> */}
                   <div className="flex flex-col mb-4">
                     <label htmlFor="">Name</label>
                     <input
                       className="outline-none border border-[#DCDCE4] rounded text-sm py-3 pl-4 w-full"
                       type="text"
-                      placeholder="Ized Uanikehi"
+                      placeholder={adminData?.fullName}
                     />
                   </div>
-                  <EditProfileModal />
+                  <EditProfileModal adminData={adminData} />
                 </form>
               </div>
             </div>

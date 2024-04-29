@@ -40,21 +40,22 @@ export default function ApproveTransactionModal({ transactionId }) {
     setToken(item);
   }, []);
 
-  const handleApproveTransaction = async () => {
-    try {
-      const response = await axios.patch(
-        `${baseUrl}/admin/withdrawals/${transactionId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setConfirmationModal(true);
-    } catch (error) {
-      toast.error(`Error approving withdrawal: ${error}`);
-    }
+  const handleApproveTransaction =  () => {
+    console.log("btn clicked")
+    // try {
+    //   const response = await axios.patch(
+    //     `${baseUrl}/admin/withdrawals/${transactionId}`,
+    //     {},
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //     }
+    //   );
+    //   setConfirmationModal(true);
+    // } catch (error) {
+    //   toast.error(`Error approving withdrawal: ${error}`);
+    // }
   };
 
   return (
