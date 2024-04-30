@@ -12,10 +12,11 @@ export default function VendorsDetails({ vendors, isLoading }) {
             key={vendor?.id}
             vendorName={vendor?.fullName}
             vendorEmail={vendor?.email}
-            vendorPlan={vendor?.planName}
+            vendorPlan={vendor?.planName === null ? "No" : vendor?.planName }
             brandName={vendor?.shopName}
             products={vendor?.products}
             id={vendor?.id}
+            avatar={vendor?.avatar}
           />
         ))
       ) : (

@@ -10,7 +10,7 @@ import useGetVendorsMetricData from "@/hooks/queries/useGetVendorMetricData";
 import { PulseLoader } from "react-spinners";
 
 export default function Vendors() {
-  const [plan, setPlanChange] = useState("basic");
+  const [plan, setPlanChange] = useState("");
   const [status, setStatus] = useState("active");
   const { data: vendorMetric } = useGetVendorsMetricData();
   const vendorMetricData = vendorMetric?.data?.data?.metrics;
@@ -46,7 +46,7 @@ export default function Vendors() {
           <PulseLoader color="#4d4d4d" />
         )}
       </div>
-      <div className="flex gap-4 mx-4 my-8 md:m-8">
+      <div className="flex flex-col md:flex-row gap-4 mx-4 my-8 md:m-8">
         <PlanSelect handlePlanChange={setPlanChange} />
         <StatusSelect handleStatusChange={setStatus} />
       </div>

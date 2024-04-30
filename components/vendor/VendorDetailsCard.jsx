@@ -10,7 +10,7 @@ export default function VendorDetailsCard({
   vendorPlan,
   brandName,
   products,
-  stores,
+  avatar,
 }) {
   const router = useRouter();
   const handleViewDetails = () => {
@@ -21,25 +21,15 @@ export default function VendorDetailsCard({
       <div className="flex flex-col md:flex-row justify-between">
         <div key={id} className="flex gap-6 items-center">
           <div className="flex gap-4 items-center">
-            <div className="hidden sm:block w-[170px]">
-              <Image
-                src={"/assets/images/dp-avatar.png"}
-                width={170}
-                height={170}
-                alt=""
-              />
+            <div className="hidden sm:block w-[170px] h-[170px] rounded-full overflow-hidden">
+              <Image src={avatar} width={170} height={170} alt="" />
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex gap-3">
                 <div className="flex flex-col">
                   <div className="flex gap-2">
-                    <div className="sm:hidden w-[40px]">
-                      <Image
-                        src={"/assets/images/dp-avatar.png"}
-                        width={170}
-                        height={170}
-                        alt=""
-                      />
+                    <div className="sm:hidden w-10 h-10 rounded-full overflow-hidden">
+                      <Image src={avatar} width={170} height={170} alt="" />
                     </div>
                     <div>
                       <div className="md:mb-4">
@@ -48,12 +38,9 @@ export default function VendorDetailsCard({
                       </div>
                     </div>
                   </div>
-                  <Button
-                    variant="tertiary"
-                    className="px-2 py-2 text-xs font-medium mb-6 w-1/3 md:hidden"
-                  >
+                  <div className="bg-[#E0EFFF] h-fit w-fit rounded-md mt-3 px-2 py-2 text-xs font-medium md:hidden">
                     {vendorPlan} Plan
-                  </Button>
+                  </div>
                   <div>
                     <p>
                       <span className="font-semibold">Brand Name: </span>
@@ -63,26 +50,24 @@ export default function VendorDetailsCard({
                       <span className="font-semibold">Products: </span>
                       {products}
                     </p>
-                    <p>
+                    {/* <p>
                       <span className="font-semibold">Stores: </span>
                       {stores}
-                    </p>
+                    </p> */}
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <Button
-          variant="tertiary"
-          className="px-2 py-2 text-xs font-medium hidden md:block"
-        >
+        <div className="bg-[#E0EFFF] h-fit rounded-md mt-3 px-2 py-2 text-xs font-medium hidden md:block">
           {vendorPlan} Plan
-        </Button>
+        </div>
       </div>
       <div className="flex justify-center md:justify-end mb-2">
         <Button
           variant="default"
+          className="w-full md:w-fit mt-4"
           disabled={products === "No products"}
           onClick={handleViewDetails}
         >

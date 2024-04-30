@@ -28,9 +28,9 @@ export const GET_REVIEWS = "/admin/reviews";
 // VENDORS
 export const VENDORS_METRIC = "/admin/vendors/metrics";
 export const LIST_VENDORS = (plan, pageParam, status, limit) =>
-  `/admin/vendors?plan=${plan}&page=${pageParam || 0}&limit=${
-    limit || 20
-  }&status=${status}`;
+  `/admin/vendors?${plan ? "plan=" + plan + "&" : ""}page=${
+    pageParam || 0
+  }&limit=${limit || 20}&status=${status}`;
 export const SUSPEND_VENDOR = (userId) => `/admin/vendors/${userId}`;
 
 export const GET_VENDORS_DETAILS = (userId) =>
