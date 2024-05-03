@@ -55,7 +55,7 @@ export default function AddProductDetailsModal({
     console.log(data);
     try {
       await axios.patch(
-        `${baseUrl}/admin/variant-stores/${variantId}/update`,
+        `${baseUrl}/admin/variants/${variantId}`,
         data,
         {
           headers: {

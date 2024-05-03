@@ -25,6 +25,7 @@ export default function Products() {
     status: statusSelect !== "" && statusSelect,
     type: productTypeSelect,
     pageParam: 1,
+    limit: 50,
   });
 
   useEffect(() => {
@@ -34,9 +35,18 @@ export default function Products() {
   return (
     <>
       <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mx-4">
-        <InnerCard cardHeading={"Total Products"} value={productMetricData?.total.total} />
-        <InnerCard cardHeading={"Pending Products"} value={productMetricData?.pending.total} />
-        <InnerCard cardHeading={"Live Products"} value={productMetricData?.active.total} />
+        <InnerCard
+          cardHeading={"Total Products"}
+          value={productMetricData?.total.total}
+        />
+        <InnerCard
+          cardHeading={"Pending Products"}
+          value={productMetricData?.pending.total}
+        />
+        <InnerCard
+          cardHeading={"Live Products"}
+          value={productMetricData?.active.total}
+        />
       </div>
       <div className="mx-4 my-8 md:m-8">
         <p className="mb-2">Filter by</p>
