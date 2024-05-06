@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
-// import LineChart from "../universal/LineChart";
-const LineChart = dynamic(() => import("../universal/LineChart",{ssr:false}))
+import LineChart from "../universal/LineChart";
+// const LineChart = dynamic(() => import("../universal/LineChart",{ssr:false}))
 import { formatNumbers } from "../../utils/formatNumbers.util";
 import { useState } from "react";
 import YearSelect from "../universal/YearSelect";
@@ -10,6 +10,29 @@ import { yearlRevenueAndSalesData } from "../../data/homeDash/chartData";
 
 export default function RevenueSection() {
   const [activeTab, setActiveTab] = useState("2023");
+  const seriesData = [
+    {
+      name: "Revenue",
+      data: yearlRevenueAndSalesData.map((data) => {
+        return formatNumbers(data?.revenue);
+      }),
+    },
+  ];
+
+  const categories = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEPT",
+    "OCT",
+    "NOV",
+    "DEC",
+  ];
 
   return (
     <Container className="mx-4">
@@ -34,152 +57,14 @@ export default function RevenueSection() {
       </div>
       <div className="w-full aspect-3">
         {activeTab === "2021" && (
-          <LineChart
-            data={{
-              labels: yearlRevenueAndSalesData.map((label) => label?.month),
-              datasets: [
-                {
-                  label: "Revenue",
-                  data: yearlRevenueAndSalesData.map((data) => data?.revenue),
-                  backgroundColor: "#fff",
-                  borderColor: "#219653",
-                  borderWidth: 1.5,
-                  pointBorderColor: "#219653",
-                },
-                {
-                  label: "Sales",
-                  data: yearlRevenueAndSalesData.map((data) => data?.sales),
-                  backgroundColor: "#fff",
-                  borderColor: "#0032C8",
-                  borderWidth: 1.5,
-                  pointBorderColor: "#219653",
-                },
-              ],
-            }}
-            options={{
-              aspectRatio: 3,
-              plugins: {
-                legend: false,
-              },
-              scales: {
-                x: {
-                  grid: {
-                    color: "rgba(0, 0, 0)",
-                    display: false,
-                  },
-                },
-                y: {
-                  grid: {
-                    color: "#fff",
-                    display: false,
-                  },
-                  ticks: {
-                    stepSize: 250000,
-                    callback: (value) => formatNumbers(value),
-                  },
-                },
-              },
-            }}
-          />
+          <LineChart series={seriesData} categories={categories} />
         )}
 
         {activeTab === "2022" && (
-          <LineChart
-            data={{
-              labels: yearlRevenueAndSalesData.map((label) => label?.month),
-              datasets: [
-                {
-                  label: "Revenue",
-                  data: yearlRevenueAndSalesData.map((data) => data?.revenue),
-                  backgroundColor: "#fff",
-                  borderColor: "#219653",
-                  borderWidth: 1.5,
-                  pointBorderColor: "#219653",
-                },
-                {
-                  label: "Sales",
-                  data: yearlRevenueAndSalesData.map((data) => data?.sales),
-                  backgroundColor: "#fff",
-                  borderColor: "#0032C8",
-                  borderWidth: 1.5,
-                  pointBorderColor: "#219653",
-                },
-              ],
-            }}
-            options={{
-              aspectRatio: 3,
-              plugins: {
-                legend: false,
-              },
-              scales: {
-                x: {
-                  grid: {
-                    color: "rgba(0, 0, 0)",
-                    display: false,
-                  },
-                },
-                y: {
-                  grid: {
-                    color: "#fff",
-                    display: false,
-                  },
-                  ticks: {
-                    stepSize: 250000,
-                    callback: (value) => formatNumbers(value),
-                  },
-                },
-              },
-            }}
-          />
+          <LineChart series={seriesData} categories={categories} />
         )}
         {activeTab === "2023" && (
-          <LineChart
-            data={{
-              labels: yearlRevenueAndSalesData.map((label) => label?.month),
-              datasets: [
-                {
-                  label: "Revenue",
-                  data: yearlRevenueAndSalesData.map((data) => data?.revenue),
-                  backgroundColor: "#fff",
-                  borderColor: "#219653",
-                  borderWidth: 1.5,
-                  pointBorderColor: "#219653",
-                },
-                {
-                  label: "Sales",
-                  data: yearlRevenueAndSalesData.map((data) => data?.sales),
-                  backgroundColor: "#fff",
-                  borderColor: "#0032C8",
-                  borderWidth: 1.5,
-                  pointBorderColor: "#219653",
-                },
-              ],
-            }}
-            options={{
-              aspectRatio: 3,
-              plugins: {
-                legend: false,
-              },
-              scales: {
-                x: {
-                  grid: {
-                    color: "rgba(0, 0, 0)",
-                    display: false,
-                  },
-                },
-                y: {
-                  grid: {
-                    color: "#fff",
-                    display: false,
-                  },
-                  ticks: {
-                    stepSize: 250000,
-                    callback: (value) => formatNumbers(value),
-                  },
-                },
-              },
-            }}
-          />
+          <LineChart series={seriesData} categories={categories} />
         )}
       </div>
     </Container>

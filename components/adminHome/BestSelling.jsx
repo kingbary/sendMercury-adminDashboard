@@ -11,7 +11,7 @@ export default function BestSelling() {
           <p className="text-[#333] text-xl font-bold">
             Best Selling Vendors
           </p>
-          <Link href={'/'} className="text-xl text-primaryBlue font-bold">See All</Link>
+          <Link href={'/vendors'} className="text-xl text-primaryBlue font-bold">See All</Link>
         </div>
       </div>
       {bestSellingData.map((data) => {
