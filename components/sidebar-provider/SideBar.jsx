@@ -45,7 +45,9 @@ export default function SideBar({ isOpen }) {
       <Link
         href={"/orders"}
         className={`${
-          isActiveBar("/orders") ? "bg-lightBlue" : ""
+          isActiveBar("/orders") || pathname.startsWith("/orders")
+            ? "bg-lightBlue"
+            : ""
         } flex gap-[10px] rounded-xl p-3 max-w-xs hover:bg-lightBlue`}
       >
         <Image
@@ -59,7 +61,9 @@ export default function SideBar({ isOpen }) {
       <Link
         href={"/vendors"}
         className={`${
-          isActiveBar("/vendors") ? "bg-lightBlue" : ""
+          isActiveBar("/vendors") || pathname.startsWith("/vendors")
+            ? "bg-lightBlue"
+            : ""
         } flex gap-[10px] rounded-xl p-3 max-w-xs hover:bg-lightBlue`}
       >
         <Image
@@ -73,7 +77,9 @@ export default function SideBar({ isOpen }) {
       <Link
         href={"/products"}
         className={`${
-          isActiveBar("/products") ? "bg-lightBlue" : ""
+          isActiveBar("/products") || pathname.startsWith("/products")
+            ? "bg-lightBlue"
+            : ""
         } flex gap-[10px] rounded-xl p-3 max-w-xs hover:bg-lightBlue`}
       >
         <Image
@@ -87,7 +93,9 @@ export default function SideBar({ isOpen }) {
       <Link
         href={"/revenue"}
         className={`${
-          isActiveBar("/revenue") ? "bg-lightBlue" : ""
+          isActiveBar("/revenue") || pathname.startsWith("/revenue")
+            ? "bg-lightBlue"
+            : ""
         } flex gap-[10px] rounded-xl p-3 max-w-xs hover:bg-lightBlue`}
       >
         <Image
@@ -115,7 +123,9 @@ export default function SideBar({ isOpen }) {
       <Link
         href={"/reviews"}
         className={`${
-          isActiveBar("/reviews") ? "bg-lightBlue" : ""
+          isActiveBar("/reviews") || pathname.startsWith("/reviews")
+            ? "bg-lightBlue"
+            : ""
         } flex gap-[10px] rounded-xl p-3 max-w-xs hover:bg-lightBlue`}
       >
         <Image
@@ -129,7 +139,9 @@ export default function SideBar({ isOpen }) {
       <Link
         href={"/settings"}
         className={`${
-          isActiveBar("/settings") ? "bg-lightBlue" : ""
+          isActiveBar("/settings") || pathname.startsWith("/settings")
+            ? "bg-lightBlue"
+            : ""
         } flex gap-[10px] rounded-xl p-3 max-w-xs hover:bg-lightBlue`}
       >
         <Image

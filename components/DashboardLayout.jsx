@@ -42,7 +42,6 @@ export default function DashboardLayout({ children }) {
       getAdminData();
     }
   }, [token, router, setAdminData]);
-  // console.log(adminData);
 
   return (
     <div className="font-nunito relative">

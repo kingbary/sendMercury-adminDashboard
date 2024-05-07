@@ -1,11 +1,11 @@
-import DashboardLayout from "@/components/DashboardLayout";
-import Settings from "@/components/settings";
-import React from "react";
+"use client";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 
 export default function pages() {
-  return (
-    <DashboardLayout>
-      <Settings />
-    </DashboardLayout>
-  );
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/settings/profile");
+  });
+  return null;
 }
