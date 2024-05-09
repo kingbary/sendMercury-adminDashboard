@@ -11,7 +11,7 @@ export default function StoresSettings() {
       <div className="sm:px-6">
         <div>
           <Link
-            href="/settings/stores"
+            href="/settings/plans"
             className="flex items-center gap-2 py-4 font-bold text-primaryBlue text-lg"
           >
             <div className="bg-[#E1E7FA] flex justify-center items-center w-6 h-6 rounded-full">

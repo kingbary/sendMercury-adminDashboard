@@ -64,7 +64,7 @@ export default function MobileTable({ activeTab }) {
                         />
                         <div>
                           <p className="font-semibold">
-                            {order?.product.productName}
+                            {order?.product}
                           </p>
                           <p className="text-xs text-midGrey">
                             {order?.vendor}
@@ -145,7 +145,7 @@ export default function MobileTable({ activeTab }) {
                         />
                         <div>
                           <p className="font-semibold">
-                            {order?.product.productName}
+                            {order?.product}
                           </p>
                           <p className="text-xs text-midGrey">
                             {order?.vendor}

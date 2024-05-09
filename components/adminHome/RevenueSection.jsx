@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
-import LineChart from "../universal/LineChart";
-// const LineChart = dynamic(() => import("../universal/LineChart",{ssr:false}))
+// import LineChart from "../universal/LineChart";
+const LineChart = dynamic(() => import("../universal/LineChart",{ssr:false}))
 import { formatNumbers } from "../../utils/formatNumbers.util";
 import { useState } from "react";
 import YearSelect from "../universal/YearSelect";

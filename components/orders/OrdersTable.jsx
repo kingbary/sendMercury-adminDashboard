@@ -69,7 +69,7 @@ export default function OrdersTable({ activeTab }) {
                   >
                     <div className="grid grid-cols-6 text-sm xl:text-base w-full">
                       <p>{order?.vendor}</p>
-                      <p>{order?.product?.productName}</p>
+                      <p>{order?.product}</p>
                       <p>{order?.store}</p>
                       <p>{order?.quantity}</p>
                       <p>{order?.totalPrice}</p>

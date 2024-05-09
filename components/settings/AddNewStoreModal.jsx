@@ -64,7 +64,7 @@ export default function AddNewStoreModal() {
 
   return (
     <div>
-      <Dialog>
+      <Dialog className="px-10">
         <DialogTrigger aschild="true">
           <Button
             variant="default"
@@ -126,7 +126,7 @@ export default function AddNewStoreModal() {
                     {isSubmitting ? (
                       <BeatLoader color="#ffffff" size={10} />
                     ) : (
-                      "Create order"
+                      "Add store"
                     )}
                   </Button>
                   <DrawerClose aschild="true">

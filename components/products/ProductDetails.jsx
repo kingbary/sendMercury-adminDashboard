@@ -30,7 +30,7 @@ export default function ProductDetails({ productsData, isLoading }) {
                     <p className="text-center">{data?.productName}</p>
                     <p className="text-center">{data?.category}</p>
                     <p className="text-center">{data?.type}</p>
-                    <p className="text-center">{data?.price}</p>
+                    <p className="text-center">{data?.price.toFixed(2)}</p>
                     <p
                       className={`text-center ${
                         data?.status === "active"

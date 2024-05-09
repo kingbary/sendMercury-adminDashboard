@@ -8,6 +8,7 @@ export default function InputContainer({
   inputVal,
   hasLogo,
   logoSrc,
+  className
 }) {
   const [inputValue, setInputValue] = useState("");
 
@@ -15,7 +16,7 @@ export default function InputContainer({
     setInputValue(event.target.value);
   };
   return (
-    <div className="relative flex flex-col w-full">
+    <div className={`relative flex flex-col w-full ${className}`}>
       <label htmlFor={id}>{labelName}</label>
       {hasLogo ? (
         <div

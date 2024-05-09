@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { BeatLoader } from "react-spinners";
+import { BeatLoader, ClipLoader } from "react-spinners";
 import {
   Dialog,
   DialogClose,
@@ -33,6 +33,7 @@ export default function AddProductDetailsModal({
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [token, setToken] = useState("");
   const [SKU, setSKU] = useState("");
+  const [productDetails, setProductDetails] = useState("");
   const {
     register,
     handleSubmit,
@@ -49,23 +50,42 @@ export default function AddProductDetailsModal({
     setToken(authToken);
   }, []);
 
+  useEffect(() => {
+    const getProductDetails = async () => {
+      try {
+        const response = await axios.get(
+          `${baseUrl}/admin/variants/${variantId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = response.data.data.variantStores;
+        setProductDetails(data);
+      } catch (error) {
+        toast.error(`${error.response.data.message}`);
+      }
+    };
+
+    if (token) {
+      getProductDetails();
+    }
+  }, [token]);
+
   const onSubmit = async (data) => {
     setSKU(data.sku);
     data.storeId = storeId;
     console.log(data);
     try {
-      await axios.patch(
-        `${baseUrl}/admin/variants/${variantId}`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.patch(`${baseUrl}/admin/variants/${variantId}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setConfirmationModal(true);
     } catch (error) {
-      console.error('Error:', error)
+      console.error("Error:", error);
       toast.error(`${error.response.data.message}`);
     }
   };
@@ -74,14 +94,16 @@ export default function AddProductDetailsModal({
     setConfirmationModal(false);
     reset();
   };
+
+  console.log(productDetails);
   return (
-    <div>
+    <div className="flex flex-col items-center">
       <Dialog>
         <DialogTrigger aschild="true">
           <Button
             variant="ghost"
             type="button"
-            className="mt-8 w-full hidden md:block"
+            className="w-full hidden md:block"
           >
             Add Product Details
           </Button>
@@ -103,14 +125,11 @@ export default function AddProductDetailsModal({
                     type="text"
                     {...register("sku", {
                       required: "Enter the SKU Number",
-                      // minLength: {
-                      //   value: 24,
-                      //   message: "Store ID have length of 24 characters long",
-                      // },
                     })}
-                    className="border border-neutral200 rounded outline-none py-3 px-4"
+                    className="border border-neutral200 rounded outline-none py-3 px-4 text-black"
                     id="sku"
-                    placeholder="SKU Number"
+                    placeholder="Enter SKU Number"
+                    defaultValue={productDetails[0]?.sku}
                   />
                   {errors.sku && (
                     <p className="text-xs text-red-400 font-normal mt-1">
@@ -127,7 +146,8 @@ export default function AddProductDetailsModal({
                     })}
                     className="border border-neutral200 rounded outline-none py-3 px-4"
                     id="productURL"
-                    placeholder="example: https://sendmercury.com/my-product"
+                    placeholder={"example: https://sendmercury.com/my-product"}
+                    defaultValue={productDetails[0]?.productURL}
                   />
                   {errors.productURL && (
                     <p className="text-xs text-red-400 font-normal mt-1">
@@ -136,12 +156,9 @@ export default function AddProductDetailsModal({
                   )}
                 </div>
                 <div className="flex flex-col items-center gap-4 mt-4">
-                  <Button variant="default" type="submit">
-                    {isSubmitting ? (
-                      <BeatLoader color="#ffffff" />
-                    ) : (
-                      "Add Details"
-                    )}
+                  <Button variant="default" type="submit" className="flex gap-1">
+                    {isSubmitting ? <ClipLoader color="#ffffff" size={16} /> : ""}
+                    Add Details
                   </Button>
                 </div>
               </form>
