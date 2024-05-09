@@ -22,7 +22,7 @@ class LineChart extends Component {
           show: true,
           curve: "straight",
           lineCap: "butt",
-          colors: "#219653",
+          colors: ["#0032c8", "#219653"],
           width: 1.5,
           dashArray: 0,
         },
@@ -40,6 +40,9 @@ class LineChart extends Component {
             show: true,
             color: "#000",
           },
+        },
+        legend: {
+          show: false,
         },
       },
       series: this.props.series || [],

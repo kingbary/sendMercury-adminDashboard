@@ -8,6 +8,7 @@ import { useState } from "react";
 import YearSelect from "../universal/YearSelect";
 import Container from "../universal/Container";
 import { yearlRevenueAndSalesData } from "../../data/homeDash/chartData";
+import { monthlyProductSalesData } from "@/data/homeDash/productSalesData";
 
 export default function RevenueSection() {
   const [activeTab, setActiveTab] = useState("2023");
@@ -16,6 +17,12 @@ export default function RevenueSection() {
       name: "Revenue",
       data: yearlRevenueAndSalesData.map((data) => {
         return formatNumbers(data?.revenue);
+      }),
+    },
+    {
+      name: "Sales",
+      data: yearlRevenueAndSalesData.map((data) => {
+        return formatNumbers(data?.sales);
       }),
     },
   ];
