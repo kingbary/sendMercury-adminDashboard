@@ -1,6 +1,9 @@
 "use client";
 import React from "react";
-import PieChart from "./PieChart";
+import dynamic from "next/dynamic";
+const PieChart = dynamic(() => import("./PieChart"), {
+  ssr: false,
+});
 import {
   orderStatusData,
   revenueAndSalesData,

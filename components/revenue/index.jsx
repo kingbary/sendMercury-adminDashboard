@@ -2,7 +2,10 @@
 import React, { useState } from "react";
 import InnerCard from "../universal/InnerCard";
 import RevenueSection from "../adminHome/RevenueSection";
-import LineChart from "../universal/LineChart";
+import dynamic from "next/dynamic";
+const LineChart = dynamic(() => import("../universal/LineChart"), {
+  ssr: false,
+});
 import Container from "../universal/Container";
 import {
   dailyRevenueAndSalesData,

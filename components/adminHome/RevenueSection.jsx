@@ -1,8 +1,8 @@
 "use client";
-// import dynamic from "next/dynamic";
-// const LineChart = dynamic(() => import("../universal/LineChart"), {
-//   ssr: false,
-// });
+import dynamic from "next/dynamic";
+const LineChart = dynamic(() => import("../universal/LineChart"), {
+  ssr: false,
+});
 import { formatNumbers } from "../../utils/formatNumbers.util";
 import { useState } from "react";
 import YearSelect from "../universal/YearSelect";
@@ -57,7 +57,7 @@ export default function RevenueSection() {
         </div>
       </div>
       <div className="w-full aspect-3">
-        {/* {activeTab === "2021" && (
+        {activeTab === "2021" && (
           <LineChart series={seriesData} categories={categories} />
         )}
 
@@ -66,7 +66,7 @@ export default function RevenueSection() {
         )}
         {activeTab === "2023" && (
           <LineChart series={seriesData} categories={categories} />
-        )} */}
+        )}
       </div>
     </Container>
   );
