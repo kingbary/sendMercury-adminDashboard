@@ -5,7 +5,7 @@ export const RESET_PASSWORD = (resetId) =>
   `/admin/auth/reset-password/${resetId}`;
 
 // DASHBOARD DATA
-export const DASHBOARD = "";
+export const OVERVIEW = "/admin/overview";
 
 //ORDERS
 export const CREATE_ORDER = "/admin/orders";
