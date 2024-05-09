@@ -16,7 +16,7 @@ export default function OrderStatus() {
       <div className="flex flex-col gap-6">
         <div className="flex justify-between">
           <p className="text-[#333] text-xl font-bold">Order Status</p>
-          <Link href={"/"} className="text-xl text-primary font-bold">
+          <Link href={"/orders"} className="text-xl text-primaryBlue font-bold">
             See All
           </Link>
         </div>
