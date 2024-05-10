@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import VetProduct from "./VetProduct";
 import AddProductDetailsModal from "./AddProductDetailsModal";
 import { Skeleton } from "../ui/skeleton";
+import { saveAs } from "file-saver";
 
 export default function ProductInformation() {
   const param = useParams();
@@ -106,7 +107,10 @@ export default function ProductInformation() {
       getVariantDetails();
     }
   }, [token]);
-  console.log(productData.status)
+  const saveImage = (imageUrl, imgName) => {
+    saveAs(imageUrl, imgName);
+  };
+  console.log(productData);
   return (
     <div className="sm:px-6">
       <Link
@@ -133,13 +137,15 @@ export default function ProductInformation() {
                 style={{ backgroundImage: `url(${productData?.thumbnail})` }}
               ></div>
             </div>
-            <a
+            <button
               className="text-primaryBlue font-bold pb-4"
-              href={productData?.thumbnail}
-              download={productData?.thumbnail}
+              download
+              onClick={() => {
+                saveImage(productData?.thumbnail, "display-img");
+              }}
             >
               Save Image
-            </a>
+            </button>
           </div>
         ) : (
           <div>
@@ -166,9 +172,12 @@ export default function ProductInformation() {
               </div>
             )}
           </div>
-          <p className="text-primaryBlue font-bold py-3 pb-4 text-right">
+          <button
+            className="text-primaryBlue font-bold py-3 pb-4 text-right"
+            onClick={() => saveImage(productData?.thumbnail, "product-image")}
+          >
             Save images
-          </p>
+          </button>
         </div>
         <div>
           {productData.name ? (
@@ -194,7 +203,7 @@ export default function ProductInformation() {
                 inputVal={productData?.type}
               />
               <InputContainer
-                labelName={"Available Stock"}
+                labelName={"Total Stock"}
                 id={"availableStock"}
                 inputVal={productData?.totalStock}
               />
@@ -214,7 +223,7 @@ export default function ProductInformation() {
             inputVal={productData?.description}
           />
         </div>
-        <div className="mt-8">
+        {/* <div className="mt-8">
           <p className="font-semibold text-lg">Shipping Locations</p>
           <div className="flex flex-col md:flex-row gap-8">
             <div className="mt-2">
@@ -236,8 +245,8 @@ export default function ProductInformation() {
               </div>
             </div>
           </div>
-        </div>
-        <div className="mt-8">
+        </div> */}
+        {/* <div className="mt-8">
           <p className="font-semibold text-lg">Sizes</p>
           <div className="flex gap-2 flex-wrap">
             <LabelCard text={"Large"} hasX />
@@ -246,12 +255,12 @@ export default function ProductInformation() {
             <LabelCard text={"Extra Large"} hasX />
             <LabelCard text={"Medium"} hasX />
           </div>
-        </div>
+        </div> */}
         <div className="mt-8">
           {productData?.variants ? (
             <>
               <p className="font-semibold mb-1">Variants</p>
-              {productData?.variants.map((variant) => {
+              {productData?.variants.map((variant, variantIndex) => {
                 return (
                   <div key={variant?.id}>
                     <button
@@ -263,8 +272,10 @@ export default function ProductInformation() {
                       <div className="bg-gray-50 flex justify-between w-full shadow items-center px-4 py-[10px] rounded-lg">
                         <p>
                           Variant{" "}
-                          {variant?.color?.toUpperCase().charAt(0) +
-                            variant?.color?.slice(1)}
+                          {variant?.color
+                            ? variant.color.toUpperCase().charAt(0) +
+                              variant.color.slice(1)
+                            : variantIndex + 1}
                         </p>
                         <div className="-rotate-90 w-[18px] h-[18px] border-[0.75px] rounded-[3px] border-neutral-200">
                           <Image
@@ -291,24 +302,26 @@ export default function ProductInformation() {
                             alt=""
                           />
                         </button>
-                        <p className="mb-4">
+                        <p className="mb=4">
                           Variant{" "}
-                          {variant?.color?.toUpperCase().charAt(0) +
-                            variant?.color?.slice(1)}
+                          {variant?.color
+                            ? variant.color.toUpperCase().charAt(0) +
+                              variant.color.slice(1)
+                            : variantIndex + 1}
                         </p>
                         <label
                           htmlFor="color"
                           className="flex flex-col gap-2 mb-4"
                         >
-                          Color
-                          <input
-                            className="w-full text-sm py-3 px-4 rounded-sm border bg-white border-neutral-200"
-                            type="text"
-                            value={
-                              variant?.color?.toUpperCase().charAt(0) +
-                              variant?.color?.slice(1)
+                          <InputContainer
+                            labelName={"Color"}
+                            id={"color"}
+                            inputVal={
+                              variant.color
+                                ? variant?.color?.toUpperCase().charAt(0) +
+                                  variant?.color?.slice(1)
+                                : "No color for this variant"
                             }
-                            disable
                           />
                         </label>
                         <div className="mt-8 w-fit justify-end">
@@ -334,9 +347,14 @@ export default function ProductInformation() {
                               </>
                             ) : null}
                           </div>
-                          <p className="text-primaryBlue font-bold py-3 pb-4 text-right">
+                          <button
+                            className="text-primaryBlue font-bold py-3 pb-4 text-right"
+                            onClick={() =>
+                              saveImage(productData?.thumbnail, "variant-image")
+                            }
+                          >
                             Save images
-                          </p>
+                          </button>
                         </div>
                         <div className="mt-8">
                           <p className="font-semibold text-lg">Sizes</p>

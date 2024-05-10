@@ -95,7 +95,6 @@ export default function AddProductDetailsModal({
     reset();
   };
 
-  console.log(productDetails);
   return (
     <div className="flex flex-col items-center">
       <Dialog>
