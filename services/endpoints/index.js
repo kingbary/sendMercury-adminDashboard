@@ -8,18 +8,24 @@ export const RESET_PASSWORD = (resetId) =>
 export const OVERVIEW = "/admin/overview";
 
 //ORDERS
+export const ORDERS_METRICS = "/admin/orders/order-overview";
 export const CREATE_ORDER = "/admin/orders";
-export const GET_PENDING_ORDERS =
-  "/admin/orders?page=1&limit=100&status=pending";
-export const GET_SUCCESSFUL_ORDERS =
-  "/admin/orders?page=1&limit=100&status=successful";
-export const SET_SUCCESSFUL_ORDER = (orderId) =>
-  `/admin/orders/${orderId}/status/cancel`;
-export const SET_SHIPPED_ORDER = (orderId) =>
-  `/admin/orders/${orderId}/status/cancel`;
+// export const GET_ORDERS = (pageParam, limit, status) =>
+//   `/admin/orders?page=${pageParam || 1}&limit=${limit || 20}${
+//     status ? "&status=" + status : ""
+//   }
+//   }`;
+export const GET_ORDERS = (pageParam, limit, status) =>
+  `/admin/orders?page=${pageParam || 1}&limit=${limit || 20}${
+    status ? `&status=${status}` : ""
+  }`;
+
+export const SET_ORDER_STATUS = (orderId, orderStatus) =>
+  `/admin/orders/${orderId}/status/${orderStatus}`;
 
 // GET STORES
-export const FETCH_STORES = "/admin/stores?page=1&limit=100&location";
+export const FETCH_STORES = (pageParam, limit) =>
+  `admin/stores?page=${pageParam || 1}&limit=${limit || 150}&location`;
 
 // REVIEWS
 export const REVIEWS = "/admin/reviews";
@@ -30,8 +36,8 @@ export const VENDORS_METRIC = "/admin/vendors/metrics";
 export const LIST_VENDORS = (plan, pageParam, status, limit) =>
   `/admin/vendors?${plan ? "plan=" + plan + "&" : ""}page=${
     pageParam || 0
-  }&limit=${limit || 20}&status=${status}`;
-export const SUSPEND_VENDOR = (userId) => `/admin/vendors/${userId}`;
+  }&limit=${limit || 20}&status=${status || "active"}`;
+export const VENDOR_ACTION = (userId) => `/admin/vendors/${userId}`;
 
 export const GET_VENDORS_DETAILS = (userId) =>
   `/admin/vendors/${userId}/reviews`;
@@ -40,6 +46,7 @@ export const GET_VENDORS_DETAILS = (userId) =>
 export const GET_NOTIFICATIONS = "/admin/notifications";
 export const READ_NOTIFICATIONS = (notificationId) =>
   `/admin/notifications/${notificationId}`;
+export const READ_ALL_NOTIFICATIONS = "/admin/notifications";
 
 // PRODUCTS
 export const PRODUCT_METRIC = "/admin/products/product-metric";
@@ -49,9 +56,29 @@ export const GET_PRODUCTS = (status, type, pageParam, limit) =>
   }page=${pageParam || 1}&limit=${limit || 20}`;
 export const GET_INDIVIDUAL_PRODUCT = (productId) =>
   `/admin/products/${productId}`;
+export const PRODUCT_STORES = (productId) =>
+  `/admin/products/${productId}/product-stores`;
+export const VARIANTS = (variantId) => `/admin/variants/${variantId}`;
+export const VET_TO_LIVE = (productId) => `/admin/products/${productId}/live`;
 
 // REVENUE
+export const TOP_STORES = "/admin/orders/top-stores";
 export const GET_WITHDRAWAL = (pageParam, limit) =>
   `/admin/withdrawals?page=${pageParam || 1}&limit=${
     limit || 20
   }&status&from=2024-02-05&to=`;
+
+// GRAPH DATA
+export const SALES_DATA = (time, year) =>
+  `/orders/sales-metric/${time}?year=${year || 2024}`;
+
+// SETTINGS
+export const LIST_PLAN = "/admin/plans";
+export const INDIVIDUAL_PLAN = (planId) => `/admin/plans/${planId}`;
+export const UPDATE_STORE = (storeId) => `/admin/stores/${storeId}`;
+export const CREATE_STORE = "/admin/stores";
+export const UPDATE_NOTIFICATIONS_SETTINGS = "/admin/notification-settings";
+export const GET_NOTIFICATIONS_SETTINGS = "/admin/notification-settings";
+
+// UPLOAD MEDIA
+export const MEDIA_UPLOAD = "/media";

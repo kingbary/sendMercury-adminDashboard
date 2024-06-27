@@ -38,7 +38,7 @@ export default function VendorDetailsCard({
                       </div>
                     </div>
                   </div>
-                  <div className="bg-[#E0EFFF] h-fit w-fit rounded-md mt-3 px-2 py-2 text-xs font-medium md:hidden">
+                  <div className="bg-[#E0EFFF] text-primaryBlue h-fit w-fit rounded-md mt-3 px-2 py-2 text-xs font-bold md:hidden">
                     {vendorPlan} Plan
                   </div>
                   <div>
@@ -60,7 +60,7 @@ export default function VendorDetailsCard({
             </div>
           </div>
         </div>
-        <div className="bg-[#E0EFFF] h-fit rounded-md mt-3 px-2 py-2 text-xs font-medium hidden md:block">
+        <div className="bg-[#E0EFFF] text-primaryBlue font-bold h-fit rounded-md mt-3 px-2 py-2 text-xs hidden md:block">
           {vendorPlan} Plan
         </div>
       </div>

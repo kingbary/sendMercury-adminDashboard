@@ -1,12 +1,14 @@
-import { useMutation } from "@tanstack/react-query";
+import { suspendVendor } from "@/services/api/vendors";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { suspendVendor } from "@/services/api/suspend-vendor";
 
 export default function useSuspendVendor() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: suspendVendor,
     onSuccess: async () => {
-      toast.success(`${response?.data.message}`);
+      queryClient.invalidateQueries({ queryKey: ["get-vendors-details"] });
+      toast.success("Vendor account suspended successfully");
     },
     onError: (error) => {
       if (error.response?.data.message) {

@@ -1,47 +1,34 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import SideBarProvider from "./sidebar-provider/SideBarProvider";
-import axios from "axios";
-import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useAdminData } from "@/app/provider/AdminDataProvider";
+import { toast } from "sonner";
+import { BeatLoader } from "react-spinners";
 
 export default function DashboardLayout({ children }) {
-  const [token, setToken] = useState("");
-  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
+  const session = useSession();
   const router = useRouter();
-  const { adminData, setAdminData } = useAdminData();
 
   useEffect(() => {
-    const sessionToken = localStorage.getItem("token");
-    if (!sessionToken) {
+    if (session.status === "loading") return;
+    if (session.status === "unauthenticated") {
       router.push("/auth/login");
-    } else {
-      setToken(sessionToken);
     }
-  }, [router]);
+  }, [session, router]);
 
-  useEffect(() => {
-    const getAdminData = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}/admin/profile`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = response.data.data;
-        setAdminData(data);
-      } catch (error) {
-        toast.error("Session expired!");
-        localStorage.removeItem("token");
-        router.push("/auth/login");
-      }
-    };
+  if (session.status === "loading") {
+    return (
+      <div className="w-screen h-screen bg-[#FAFAFA] flex justify-center items-center">
+        <BeatLoader color="#0032C8" size={20} />
+      </div>
+    );
+  }
 
-    if (token) {
-      getAdminData();
-    }
-  }, [token, router, setAdminData]);
+  if (session.status === "unauthenticated") {
+    toast.error("You're not authorized!");
+    return null;
+  }
 
   return (
     <div className="font-nunito relative">

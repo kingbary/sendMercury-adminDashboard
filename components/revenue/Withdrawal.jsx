@@ -1,13 +1,13 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-// import React, { useState } from "react";
 import PeriodSelect from "../universal/PeriodSelect";
 import YearSelect from "../universal/YearSelect";
 import { useState } from "react";
 import WithdrawalTable from "./WithdrawalTable";
 import MobileWithdrawalTable from "./MobileWithdrawalTable";
 import useListWithdrawal from "@/hooks/queries/useGetWithdrawal";
+import PaginationComp from "../universal/PaginationComp";
 
 export default function Withdrawal() {
   let [activeTab, setActiveTab] = useState("2023");
@@ -57,8 +57,9 @@ export default function Withdrawal() {
           </div>
         </div>
       </div>
-      <WithdrawalTable transactions={transactions} />
+      <WithdrawalTable transactions={transactions} isLoading={isLoading} />
       <MobileWithdrawalTable transactions={transactions} />
+      <PaginationComp />
     </div>
   );
 }

@@ -137,7 +137,7 @@ export default function SideBar({ isOpen }) {
         Reviews
       </Link>
       <Link
-        href={"/settings"}
+        href={"/settings/profile"}
         className={`${
           isActiveBar("/settings") || pathname.startsWith("/settings")
             ? "bg-lightBlue"

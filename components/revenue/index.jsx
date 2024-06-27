@@ -17,6 +17,7 @@ import StoreSelect from "../universal/StoreSelect";
 import YearSelect from "../universal/YearSelect";
 import PeriodSelect from "../universal/PeriodSelect";
 import Link from "next/link";
+import useGetTopStores from "@/hooks/queries/useGetTopStores";
 
 export default function Revenue() {
   let [activeTab, setActiveTab] = useState("2023");
@@ -24,45 +25,36 @@ export default function Revenue() {
   const handleTabClick = (selectedTab) => {
     setTab(selectedTab);
   };
+  const { data, isLoading } = useGetTopStores();
+  console.log(data?.data?.data);
+  const topStores = data?.data?.data;
   return (
     <>
       <div className="ml-8 font-extrabold text-2xl w-full mb-4">Sales</div>
       <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mx-8">
-        <InnerCard
-          cardHeading={"Amazon"}
-          value={"₦1,103,789.00"}
-          percentageIncrease={"29.09"}
-          increaseAmount={"+ ₦1,000,000"}
-          percentage
-        />
-        <InnerCard
-          cardHeading={"Jumia"}
-          value={"₦1,103,789.00"}
-          percentageIncrease={"29.09"}
-          increaseAmount={"- ₦1,000,000"}
-          percentage
-        />
-        <InnerCard
-          cardHeading={"Ebay"}
-          value={"₦1,103,789.00"}
-          percentageIncrease={"29.09"}
-          increaseAmount={"+100"}
-          percentage
-        />
-        <InnerCard
-          cardHeading={"Konga"}
-          value={"₦1,103,789.00"}
-          percentageIncrease={"29.09"}
-          increaseAmount={"+100"}
-          percentage
-        />
+        {topStores ? (
+          topStores.map((store) => {
+            return (
+              <InnerCard
+                key={store?.id}
+                cardHeading={store?.storeName}
+                value={`${store?.total}`}
+                percentageIncrease={store?.percentage}
+                increaseAmount={store?.currentMonth}
+                percentage
+              />
+            );
+          })
+        ) : (
+          <p>No stores available</p>
+        )}
       </div>
       <Container
         className={"flex flex-col gap-2 md:flex-row justify-between mx-8"}
       >
         <div>
           <p className="font-bold">Withdrawals</p>
-          <p>You have {"20"} pending withdrawals awaiting approval</p>
+          <p>You have {"201"} pending withdrawals awaiting approval</p>
         </div>
         <Link
           href={"/revenue/withdrawal"}

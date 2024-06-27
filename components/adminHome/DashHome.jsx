@@ -6,11 +6,14 @@ import RevenueSection from "./RevenueSection";
 import ProductSales from "./ProductSales";
 import OrderStatus from "./OrderStatus";
 import BestSelling from "./BestSelling";
-import { useAdminData } from "@/app/provider/AdminDataProvider";
 import useGetOverview from "@/hooks/queries/useGetOverview";
+import { useSession } from "next-auth/react";
+import { useAuthToken } from "@/hooks/useAuthToken";
 
 export default function DashHome() {
-  const { adminData } = useAdminData();
+  const session = useSession();
+  const adminData = session?.data?.user?.data?.admin;
+  useAuthToken();
   const { data } = useGetOverview();
   const dashboardData = data?.data?.data;
   return (
@@ -35,7 +38,7 @@ export default function DashHome() {
         <InnerCard
           iconSrc={"/assets/icons/index-wallet.svg"}
           cardHeading={"Revenue"}
-          value={dashboardData?.revenue?.total}
+          value={`$${dashboardData?.revenue?.total}`}
           percentageIncrease={dashboardData?.revenue?.percentage}
           increaseAmount={`+ ${dashboardData?.revenue?.currentMonth}`}
           percentage

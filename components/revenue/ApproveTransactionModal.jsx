@@ -12,7 +12,6 @@ import {
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { PulseLoader } from "react-spinners";
 import {
   Dialog,
   DialogClose,
@@ -21,11 +20,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import axios from "axios";
-import { toast } from "sonner";
 
 export default function ApproveTransactionModal({ transactionId }) {
-  console.log(transactionId);
   const [open, setOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [token, setToken] = useState("");
@@ -34,7 +30,7 @@ export default function ApproveTransactionModal({ transactionId }) {
   //     reset,
   //   } = useForm({ mode: "all" });
   // const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
-  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
+  const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
   useEffect(() => {
     const item = localStorage.getItem("token");
     setToken(item);

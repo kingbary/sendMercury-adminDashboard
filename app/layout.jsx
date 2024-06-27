@@ -1,24 +1,20 @@
+"use client";
 import { Toaster } from "sonner";
 import "./globals.css";
 import "@/styles/nprogress.css";
-import Interceptor from "./provider/Interceptor";
-import AuthProvider from "./provider/AuthProvider";
-import { AdminDataProvider } from "./provider/AdminDataProvider";
+import Interceptor from "../components/provider/Interceptor";
+import AuthProvider from "../components/provider/AuthProvider";
+import { SessionProvider } from "next-auth/react";
 
-export const metadata = {
-  title: "SendMercury | Admin Dashboard",
-  description: "Admin Dashboard for SendMercury",
-};
-
-export default function RootLayout({ children }) {
+export default function RootLayout({ children, session }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <AuthProvider>
-          <Interceptor>
-            <AdminDataProvider>{children}</AdminDataProvider>
-          </Interceptor>
-        </AuthProvider>
+        <SessionProvider session={session}>
+          <AuthProvider>
+            <Interceptor>{children}</Interceptor>
+          </AuthProvider>
+        </SessionProvider>
       </body>
       <Toaster position="top-right" />
     </html>

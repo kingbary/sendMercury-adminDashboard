@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { MdArrowUpward } from "react-icons/md";
+import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
 
 export default function InnerCard({
   iconSrc,
@@ -10,7 +10,8 @@ export default function InnerCard({
   value,
   percentageIncrease,
   increaseAmount,
-  percentage
+  percentage,
+  children,
 }) {
   return (
     <div className="flex flex-col justify-between gap-6 md:gap-3 lg:gap-6 p-[10px] lg:py-4 lg:px-2 shadow rounded-2xl">
@@ -44,18 +45,28 @@ export default function InnerCard({
         </div>
       </div>
       {percentage ? (
-        <div className="flex gap-2 text-xs text-green-600 lg:flex-row">
+        <div
+          className={`flex gap-2 text-xs lg:flex-row ${
+            percentageIncrease > 0 ? "text-green-600" : "text-red-600"
+          }`}
+        >
           <p className="flex">
-            <MdArrowUpward size={16} />
+            {percentageIncrease > 0 ? (
+              <MdArrowUpward size={16} />
+            ) : (
+              <MdArrowDownward size={16} />
+            )}
             {percentageIncrease}%{" "}
           </p>
           <p className="text-[#1c1c1c] font-medium">
-            {increaseAmount} this month
+            {increaseAmount > 0 ? `+${increaseAmount}` : increaseAmount} this
+            month
           </p>
         </div>
       ) : (
         ""
       )}
+      {children}
     </div>
   );
 }

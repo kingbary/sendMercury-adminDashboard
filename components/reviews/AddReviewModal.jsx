@@ -41,7 +41,7 @@ export default function AddReviewModal() {
   const storeOption = data?.data?.data.stores;
 
   // const { mutate } = useCreateReview();
-  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
+  const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -75,7 +75,7 @@ export default function AddReviewModal() {
           <Button
             variant="default"
             type="button"
-            className="mt-8 w-full hidden md:block"
+            className="w-full hidden md:block"
           >
             Add New Review
           </Button>

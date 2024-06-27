@@ -1,7 +1,6 @@
 "use client";
 import DashboardLayout from "@/components/DashboardLayout";
 import AddReviewModal from "@/components/reviews/AddReviewModal";
-import { Button } from "@/components/ui/button";
 import Container from "@/components/universal/Container";
 import useListReviews from "@/hooks/queries/useListReviews";
 import Image from "next/image";
@@ -25,51 +24,62 @@ export default function Reviews() {
         </div>
       </div>
       <Container className={"mx-4"}>
-        {reviews?.map((review) => {
-          return (
-            <div
-              key={review?.id}
-              className="border border-lightGray py-2 px-4 rounded-[8px] bg-[#f6f6f6] mb-4 w-full"
-            >
-              <div className="flex justify-between items-center w-full">
-                <div className="flex flex-col md:flex-row justify-start md:items-center md:gap-6 py-4 w-full">
-                  <Image
-                    className="rounded-full w-8 h-8 md:w-16 md:h-16"
-                    src={review?.store.logo}
-                    width={64}
-                    height={64}
-                    alt=""
-                  />
-                  <div className="mr-2">
-                    <div className="flex items-center gap-2">
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <div key={i}>
-                            {i < review.rating ? (
-                              <FaStar color="#F2C94C" />
-                            ) : (
-                              <FaRegStar color="#D4D4D4" />
-                            )}
+        {reviews && reviews.length > 0 ? (
+          <>
+            {reviews?.map((review) => {
+              return (
+                <div
+                  key={review?.id}
+                  className="border border-lightGray py-2 px-4 rounded-[8px] bg-[#f6f6f6] mb-4 w-full"
+                >
+                  <div className="flex justify-between items-center w-full">
+                    <div className="flex flex-col md:flex-row justify-start md:items-center md:gap-6 py-4 w-full">
+                      <Image
+                        className="rounded-full w-8 h-8 md:w-16 md:h-16"
+                        src={review?.store.logo}
+                        width={64}
+                        height={64}
+                        alt=""
+                      />
+                      <div className="mr-2">
+                        <div className="flex items-center gap-2">
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <div key={i}>
+                                {i < review.rating ? (
+                                  <FaStar color="#F2C94C" />
+                                ) : (
+                                  <FaRegStar color="#D4D4D4" />
+                                )}
+                              </div>
+                            ))}
                           </div>
-                        ))}
+                          <p className="text">
+                            {review?.productName} -{" "}
+                            {review?.store.name.toUpperCase()}
+                          </p>
+                        </div>
+                        <p className="font-normal text-sm text-black">
+                          {review?.message}
+                        </p>
+                        <p className="text-sm text-midGray flex justify-end md:justify-start mt-2">
+                          {review?.customerName}
+                        </p>
                       </div>
-                      <p className="text">
-                        {review?.productName} -{" "}
-                        {review?.store.name.toUpperCase()}
-                      </p>
                     </div>
-                    <p className="font-normal text-sm text-black">
-                      {review?.message}
-                    </p>
-                    <p className="text-sm text-midGray flex justify-end md:justify-start mt-2">
-                      {review?.customerName}
-                    </p>
                   </div>
                 </div>
-              </div>
-            </div>
-          );
-        })}
+              );
+            })}
+          </>
+        ) : (
+          <div className="flex flex-col justify-center items-center gap-4">
+            <p className="text-darkGray text-lg">
+              You do not have any reviews yet
+            </p>
+            <AddReviewModal />
+          </div>
+        )}
       </Container>
     </DashboardLayout>
   );

@@ -22,50 +22,24 @@ import {
 } from "../ui/drawer";
 import { useForm } from "react-hook-form";
 import { useParams } from "next/navigation";
-import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { PulseLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
+import useReactivateVendor from "@/hooks/mutations/useReactivateVendor";
 
 export default function ActivateVendor() {
   const [open, setOpen] = useState(false);
   const [formStep, setFormStep] = useState("step1");
   const [confirmationModal, setConfirmationModal] = useState(false);
-  const queryClient = useQueryClient();
   const params = useParams();
   const userId = params.vendorId;
-  // const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
-  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { isSubmitting },
-  } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     mode: "all",
   });
 
+  const { mutate, isPending } = useReactivateVendor();
+
   const onSubmit = () => {
-    const authToken = localStorage.getItem("token");
-    axios
-      .patch(
-        `${baseUrl}/admin/vendors/${userId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      )
-      .then((response) => {
-        setConfirmationModal(true);
-        queryClient.invalidateQueries({
-          queryKey: [`get-vendors-details, ${userId}`],
-        });
-      })
-      .catch((error) => {
-        console.error("Error reactivating vendor:", error);
-        toast.error(`${error}`);
-      });
+    mutate(userId);
   };
 
   return (
@@ -89,12 +63,15 @@ export default function ActivateVendor() {
                 </DialogTitle>
                 <div className="flex flex-col items-center gap-4">
                   <div>
-                    <Button variant="default" type="submit">
-                      {isSubmitting ? (
-                        <PulseLoader color="#4d4d4d" />
-                      ) : (
-                        "Reactivate Vendor"
-                      )}
+                    <Button
+                      variant="default"
+                      type="submit"
+                      className="flex gap-1 items-center"
+                    >
+                      {isPending ? (
+                        <ClipLoader size={16} color="#ffffff" />
+                      ) : null}
+                      Reactivate Vendor
                     </Button>
                   </div>
                   <DialogClose aschild="true">

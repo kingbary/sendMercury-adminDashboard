@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -13,7 +13,7 @@ import {
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { BeatLoader } from "react-spinners";
+import { BeatLoader, ClipLoader } from "react-spinners";
 import {
   Dialog,
   DialogClose,
@@ -21,12 +21,18 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "../ui/dialog";
-import axios from "axios";
 import { toast } from "sonner";
+import { CheckCircle, Upload } from "lucide-react";
+import useMediaUpload from "@/hooks/mutations/useMediaUpload";
+import useCreateStore from "@/hooks/mutations/useCreateStore";
+import { useAuthToken } from "@/hooks/useAuthToken";
 
 export default function AddNewStoreModal() {
   const [open, setOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [imagePath, setImagePath] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -34,38 +40,47 @@ export default function AddNewStoreModal() {
     reset,
   } = useForm({ mode: "all" });
   const [token, setToken] = useState("");
+  const { mutate: uploadMedia, isPending: isUploadingMediaPending } =
+    useMediaUpload();
+  const { mutate: createStore, isPending: isCreatePending } = useCreateStore();
 
-  // const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
-  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
-  useEffect(() => {
-    const authToken = localStorage.getItem("token");
-    setToken(authToken);
-  }, []);
-
-  const onSubmit = async (data) => {
-    const createdAt = new Date().toISOString();
-    try {
-      (data.createdAt = createdAt),
-        await axios.post(`${baseUrl}/admin/orders`, data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-      setConfirmationModal(true);
-    } catch (error) {
-      toast.error(`${error.response.data.message}`);
-    }
+  const handleMediaChange = (e) => {
+    const file = e.target.files[0];
+    uploadMedia(file, {
+      onSuccess: (data) => {
+        setImagePath(data);
+        setUploadSuccess(true);
+      },
+      onError: (error) => {
+        toast.error("Error uploading image: " + error.message);
+      },
+    });
+  };
+  useAuthToken();
+  const onSubmit = async (formData) => {
+    const data = {
+      name: formData.name,
+      logo: imagePath,
+    };
+    createStore(data, {
+      onSuccess: () => {
+        setConfirmationModal(true);
+        reset();
+        setUploadSuccess(false);
+      },
+    });
   };
 
   const handleCloseModal = () => {
     setConfirmationModal(false);
     reset();
+    setUploadSuccess(false);
   };
 
   return (
     <div>
       <Dialog className="px-10">
-        <DialogTrigger aschild="true">
+        <DialogTrigger asChild>
           <Button
             variant="default"
             type="button"
@@ -77,59 +92,79 @@ export default function AddNewStoreModal() {
         {!confirmationModal && (
           <DialogContent>
             <DialogHeader className="flex flex-col items-center py-1">
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                enctype="multipart/form-data"
-                className="w-full"
-              >
+              <form onSubmit={handleSubmit(onSubmit)} className="w-full">
                 <div className="flex flex-col w-full mb-3">
-                  <label htmlFor="storeName">Store Name</label>
+                  <label htmlFor="name">Store Name</label>
                   <input
                     type="text"
-                    {...register("storeName", {
+                    {...register("name", {
                       required: "Store Name is required",
                     })}
                     className="border border-neutral200 rounded outline-none py-3 px-4"
-                    id="storeName"
+                    id="name"
                     placeholder="Enter the store name"
                   />
-                  {errors.storeName && (
+                  {errors.name && (
                     <p className="text-xs text-red-400 font-normal">
-                      {errors?.storeName.message}
+                      {errors?.name.message}
                     </p>
                   )}
                 </div>
-                <div className="flex flex-col w-full mb-3 relative">
-                  <label htmlFor="storeImage">Upload store image</label>
+                <div className="flex flex-col">
+                  <label htmlFor="">Upload store image</label>
+                  <label
+                    htmlFor="fileInput"
+                    className="py-3 px-4 text-gray-400 border border-neutral200 rounded outline-none text-sm sm:text-base font-light"
+                  >
+                    <div className="relative flex items-center">
+                      {uploadSuccess ? (
+                        <CheckCircle
+                          size={16}
+                          color="#0032C8"
+                          className="absolute right-0 top-1"
+                        />
+                      ) : isUploadingMediaPending ? (
+                        <ClipLoader
+                          color="#c4c4c4"
+                          className="absolute right-0 top-1"
+                          size={18}
+                        />
+                      ) : (
+                        <Upload size={16} className="absolute right-0 top-1" />
+                      )}
+                    </div>
+                    {uploadSuccess
+                      ? "Image uploaded successfully"
+                      : "Upload image"}
+                  </label>
                   <input
+                    className="w-full h-full hidden"
+                    placeholder="Upload deck"
+                    id="fileInput"
                     type="file"
-                    {...register("storeImage", {
-                      required: "This field is required",
-                    })}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    id="storeImage"
-                    placeholder="Enter the store image"
-                    accept="image/png, image/svg+xml, image/jpeg"
+                    name="file"
+                    onChange={handleMediaChange}
+                    accept="image/*"
                   />
-                  <div className="border border-neutral200 rounded outline-none py-3 px-4">
-                    <span className="block">Select Image</span>
-                  </div>
-                  {errors.storeImage && (
+                  {errors.fileInput && (
                     <p className="text-xs text-red-400 font-normal">
-                      {errors.storeImage.message}
+                      {errors?.fileInput.message}
                     </p>
                   )}
                 </div>
 
-                <div className="flex flex-col items-center gap-4">
-                  <Button variant="default" type="submit">
-                    {isSubmitting ? (
-                      <BeatLoader color="#ffffff" size={10} />
-                    ) : (
-                      "Add store"
-                    )}
+                <div className="flex flex-col items-center gap-4 mt-4">
+                  <Button
+                    variant="default"
+                    type="submit"
+                    className="flex gap-1"
+                  >
+                    {isCreatePending ? (
+                      <ClipLoader color="#ffffff" size={16} />
+                    ) : null}
+                    Add store
                   </Button>
-                  <DrawerClose aschild="true">
+                  <DialogClose asChild>
                     <Button
                       type="button"
                       variant="outline"
@@ -137,7 +172,7 @@ export default function AddNewStoreModal() {
                     >
                       Close
                     </Button>
-                  </DrawerClose>
+                  </DialogClose>
                 </div>
               </form>
             </DialogHeader>
@@ -152,7 +187,7 @@ export default function AddNewStoreModal() {
               alt=""
             />
             <p className="text-2xl text-center font-medium">
-              Order created successfully and the vendor has been notified
+              Store added successfully
             </p>
             <DialogClose>
               <div>
@@ -164,8 +199,8 @@ export default function AddNewStoreModal() {
           </DialogContent>
         )}
       </Dialog>
-      <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger aschild="true">
+      {/* <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger asChild>
           <Button variant="default" className="w-full mt-6 md:hidden">
             Create new order
           </Button>
@@ -179,93 +214,84 @@ export default function AddNewStoreModal() {
               <DrawerDescription>
                 <form onSubmit={handleSubmit(onSubmit)} className="w-full">
                   <div className="flex flex-col w-full mb-3">
-                    <label htmlFor="skuNumber">SKU Number</label>
+                    <label htmlFor="name">Store Name</label>
                     <input
                       type="text"
-                      {...register("sku", {
-                        required:
-                          "Enter specific SKU number for product ordered",
+                      {...register("name", {
+                        required: "Store Name is required",
                       })}
                       className="border border-neutral200 rounded outline-none py-3 px-4"
-                      id="skuNumber"
-                      placeholder="SKU Number"
+                      id="name"
+                      placeholder="Enter the store name"
                     />
-                    {errors.sku && (
+                    {errors.name && (
                       <p className="text-xs text-red-400 font-normal">
-                        {errors?.sku.message}
+                        {errors?.name.message}
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col w-full mb-3">
-                    <label htmlFor="orderQty">Order Quantity</label>
+                  <div className="flex flex-col">
+                    <label htmlFor="">Upload store image</label>
+                    <label
+                      htmlFor="fileInput"
+                      className="py-3 px-4 text-gray-400 border border-neutral200 rounded outline-none text-sm sm:text-base font-light"
+                    >
+                      <div className="relative flex items-center">
+                        {uploadSuccess ? (
+                          <CheckCircle
+                            size={16}
+                            color="#0032C8"
+                            className="absolute right-0 top-1"
+                          />
+                        ) : isUploadingMediaPending ? (
+                          <ClipLoader
+                            color="#c4c4c4"
+                            className="absolute right-0 top-1"
+                            size={18}
+                          />
+                        ) : (
+                          <Upload
+                            size={16}
+                            className="absolute right-0 top-1"
+                          />
+                        )}
+                      </div>
+                      {uploadSuccess
+                        ? "Image uploaded successfully"
+                        : "Upload image"}
+                    </label>
                     <input
-                      type="text"
-                      {...register("quantity", {
-                        required: "This feild is required",
-                      })}
-                      className="border border-neutral200 rounded outline-none py-3 px-4"
-                      id="orderQty"
-                      placeholder="Order Quantity"
+                      className="w-full h-full hidden"
+                      placeholder="Upload deck"
+                      id="fileInput"
+                      type="file"
+                      name="file"
+                      onChange={handleMediaChange}
+                      accept="image/*"
                     />
-                    {errors.quantity && (
+                    {errors.fileInput && (
                       <p className="text-xs text-red-400 font-normal">
-                        {errors?.quantity.message}
+                        {errors?.fileInput.message}
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col w-full mb-3">
-                    <label htmlFor="storeId">Store Name</label>
-                    {errors.storeId && (
-                      <p className="text-xs text-red-400 font-normal">
-                        {errors?.storeId.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-col w-full mb-3">
-                    <label htmlFor="address">Delivery Address</label>
-                    <input
-                      type="text"
-                      {...register("address", {
-                        required: "This feild is required",
-                      })}
-                      className="border border-neutral200 rounded outline-none py-3 px-4"
-                      id="address"
-                      placeholder="Address"
-                    />
-                    {errors.address && (
-                      <p className="text-xs text-red-400 font-normal">
-                        {errors?.address.message}
-                      </p>
-                    )}
-                  </div>
-                  {/* <div className="flex flex-col w-full mb-3">
-            <label htmlFor="time">Order Time</label>
-            <input
-              type="text"
-              {...register("createdAt", {
-                required: "Input the time the order was placed on the store",
-              })}
-              className="border border-neutral200 rounded outline-none py-3 px-4"
-              id="time"
-              placeholder="Time"
-            />
-            {errors.createdAt && (
-              <p className="text-xs text-red-400 font-normal">
-                {errors?.createdAt.message}
-              </p>
-            )}
-          </div> */}
-                  <div className="flex flex-col items-center gap-4">
+
+                  <div className="flex flex-col items-center gap-4 mt-4">
                     <Button variant="default" type="submit">
                       {isSubmitting ? (
-                        <BeatLoader color="#ffffff" size={10} />
-                      ) : (
-                        "Create order"
-                      )}
+                        <ClipLoader color="#ffffff" size={16} />
+                      ) : null}
+                      Add store
                     </Button>
-                    <Button type="button" variant="outline">
-                      Close
-                    </Button>
+                    <DrawerClose asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleCloseModal}
+                      >
+                        Close
+                      </Button>
+                    </DrawerClose>
                   </div>
                 </form>
               </DrawerDescription>
@@ -291,7 +317,7 @@ export default function AddNewStoreModal() {
             </DrawerClose>
           </DrawerContent>
         )}
-      </Drawer>
+      </Drawer> */}
     </div>
   );
 }

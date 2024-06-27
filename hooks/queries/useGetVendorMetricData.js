@@ -1,4 +1,4 @@
-import { getVendorMetric } from "@/services/api/list-vendors";
+import { getVendorMetric } from "@/services/api/vendors";
 import { useQuery } from "@tanstack/react-query";
 
 export default function useGetVendorsMetricData() {

@@ -4,28 +4,25 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Container from "../universal/Container";
 import InputContainer from "./InputContainer";
-import { Button } from "../ui/button";
 import { IoMdArrowDropdown } from "react-icons/io";
 import LabelCard from "./LabelCard";
-import { redirect, useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
 import VetProduct from "./VetProduct";
 import AddProductDetailsModal from "./AddProductDetailsModal";
 import { Skeleton } from "../ui/skeleton";
 import { saveAs } from "file-saver";
+import useGetIndividualProduct from "@/hooks/queries/useGetIndividualProduct";
+import { useAuthToken } from "@/hooks/useAuthToken";
+import useGetProductStore from "@/hooks/queries/useGetProductStores";
 
 export default function ProductInformation() {
   const param = useParams();
   const productId = param.productId;
   const [count, setCount] = useState(1);
   const [count2, setCount2] = useState(1);
-  const [productData, setProductData] = useState({});
-  const [productStores, setProductStores] = useState({});
-  const [token, setToken] = useState("");
   const [viewMore, setViewMore] = useState(false);
-  // const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
-  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
 
   const handleIncrement2 = () => {
     setCount2((prevCount) => prevCount + 1);
@@ -36,81 +33,16 @@ export default function ProductInformation() {
       setCount2((prevCount) => prevCount - 1);
     }
   };
-  useEffect(() => {
-    const item = localStorage.getItem("token");
-    setToken(item);
-  }, []);
+  useAuthToken();
+  const { data: individualProductData, isLoading } =
+    useGetIndividualProduct(productId);
+  const productData = individualProductData?.data?.data;
+  const { data: productStoresData } = useGetProductStore(productId);
+  const productStores = productStoresData?.data?.data;
 
-  useEffect(() => {
-    const getProductData = async () => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}/admin/products/${productId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = response.data.data;
-        setProductData(data);
-      } catch (error) {
-        toast.error(`${error.response.data.message}`);
-      }
-    };
-
-    if (token) {
-      getProductData();
-    }
-  }, [token]);
-  useEffect(() => {
-    const getProductStores = async () => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}/admin/products/${productId}/product-stores`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = response.data.data;
-        setProductStores(data);
-      } catch (error) {
-        toast.error(`${error.response.data.message}`);
-      }
-    };
-
-    if (token) {
-      getProductStores();
-    }
-  }, [token]);
-  useEffect(() => {
-    const getVariantDetails = async () => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}/admin/products/${productId}/product-stores`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = response.data.data;
-        setProductStores(data);
-      } catch (error) {
-        toast.error(`${error.response.data.message}`);
-      }
-    };
-
-    if (token) {
-      getVariantDetails();
-    }
-  }, [token]);
   const saveImage = (imageUrl, imgName) => {
     saveAs(imageUrl, imgName);
   };
-  console.log(productData);
   return (
     <div className="sm:px-6">
       <Link
@@ -180,7 +112,7 @@ export default function ProductInformation() {
           </button>
         </div>
         <div>
-          {productData.name ? (
+          {productData?.name ? (
             <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-6">
               <InputContainer
                 labelName={"Product Name"}
@@ -223,39 +155,6 @@ export default function ProductInformation() {
             inputVal={productData?.description}
           />
         </div>
-        {/* <div className="mt-8">
-          <p className="font-semibold text-lg">Shipping Locations</p>
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="mt-2">
-              <p className="font-semibold">Continents</p>
-              <div className="flex flex-wrap gap-2">
-                <LabelCard text={"Africa"} />
-                <LabelCard text={"Europe"} />
-                <LabelCard text={"Asia"} />
-                <LabelCard text={"Australia"} />
-              </div>
-            </div>
-            <div className="mt-2">
-              <p className="font-semibold">Countries</p>
-              <div className="flex flex-wrap gap-2">
-                <LabelCard text={"Ghana"} />
-                <LabelCard text={"Nigeria"} />
-                <LabelCard text={"USA"} />
-                <LabelCard text={"United Kingdom"} />
-              </div>
-            </div>
-          </div>
-        </div> */}
-        {/* <div className="mt-8">
-          <p className="font-semibold text-lg">Sizes</p>
-          <div className="flex gap-2 flex-wrap">
-            <LabelCard text={"Large"} hasX />
-            <LabelCard text={"Small"} hasX />
-            <LabelCard text={"Extra Small"} hasX />
-            <LabelCard text={"Extra Large"} hasX />
-            <LabelCard text={"Medium"} hasX />
-          </div>
-        </div> */}
         <div className="mt-8">
           {productData?.variants ? (
             <>
@@ -444,7 +343,7 @@ export default function ProductInformation() {
             <p>No variants available</p>
           )}
         </div>
-        <VetProduct isActive={productData.status} />
+        <VetProduct isActive={productData?.status} />
       </Container>
     </div>
   );

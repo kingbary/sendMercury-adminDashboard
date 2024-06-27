@@ -1,6 +1,6 @@
 import * as React from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
+import { ArrowLeft, ArrowRight, MoreHorizontal } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -44,26 +44,32 @@ const PaginationLink = ({ className, isActive, size = "icon", ...props }) => (
 );
 PaginationLink.displayName = "PaginationLink";
 
-const PaginationPrevious = ({ className, ...props }) => (
-  <PaginationLink aschild
+const PaginationPrevious = ({ className, prevBtnClassName, ...props }) => (
+  <PaginationLink
+    aschild
     aria-label="Go to previous page"
     size="default"
     className={cn("gap-1 pl-2.5", className)}
     {...props}
   >
-    <Button variant="secondary">Back</Button>
+    <Button variant="secondary" className={cn(prevBtnClassName)}>
+      <ArrowLeft className="shrink-0 size-4" />
+    </Button>
   </PaginationLink>
 );
 PaginationPrevious.displayName = "PaginationPrevious";
 
-const PaginationNext = ({ className, ...props }) => (
-  <PaginationLink aschild
+const PaginationNext = ({ className, nextBtnClassName, ...props }) => (
+  <PaginationLink
+    aschild
     aria-label="Go to next page"
     size="default"
     className={cn("gap-1 pr-2.5", className)}
     {...props}
   >
-    <Button variant="default">Next</Button>
+    <Button variant="default" className={cn(nextBtnClassName)}>
+      <ArrowRight className="shrink-0 size-4" />
+    </Button>
   </PaginationLink>
 );
 PaginationNext.displayName = "PaginationNext";

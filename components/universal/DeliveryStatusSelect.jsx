@@ -6,42 +6,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useRouter } from "next/navigation";
 
-export default function DeliveryStatusSelect({ handleActiveTab }) {
+export default function DeliveryStatusSelect() {
+  const router = useRouter();
+  const onValueChange = (orderStatus) => {
+    router.push(`?orderStatus=${orderStatus}`);
+  };
   return (
-    <Select
-      onValueChange={(value) => handleActiveTab(value)}
-      className="w-full"
-    >
+    <Select onValueChange={onValueChange} className="w-full">
       <SelectTrigger className="md:w-44">
-        <SelectValue defaultValue={"awaitingDelivery"} placeholder="Awaiting Delivery" />
+        <SelectValue
+          defaultValue={"awaitingDelivery"}
+          placeholder="Awaiting Delivery"
+        />
       </SelectTrigger>
       <SelectContent className="">
-        <SelectItem
-          value="awaitingDelivery"
-          onClick={() => handleActiveTab("awaitingDelivery")}
-        >
-          Awaiting Delivery
-        </SelectItem>
-        <SelectItem
-          value="processedDelivery"
-          onClick={() => handleActiveTab("processedDelivery")}
-        >
-          Processed Delivery
-        </SelectItem>
-        <SelectItem
-          value="deliveryConfirmed"
-          onClick={() => handleActiveTab("deliveryConfirmed")}
-        >
-          Delivery Confirmed
-        </SelectItem>
-        <SelectItem
-          value="delivered"
-          onClick={() => handleActiveTab("delivered")}
-        >
-          Delivered
-        </SelectItem>
-        <SelectItem
+        <SelectItem value="all">All</SelectItem>
+        <SelectItem value="Pending">Awaiting Delivery</SelectItem>
+        <SelectItem value="Cancelled">Cancelled</SelectItem>
+        <SelectItem value="shipment_uploaded">Processed Delivery</SelectItem>
+        <SelectItem value="Shipped">Delivery Confirmed</SelectItem>
+        <SelectItem value="Delivered">Delivered</SelectItem>
+        {/* <SelectItem
           value="returnInProgress"
           onClick={() => handleActiveTab("returnInProgress")}
         >
@@ -52,7 +39,7 @@ export default function DeliveryStatusSelect({ handleActiveTab }) {
           onClick={() => handleActiveTab("returnInCompleted")}
         >
           Return Completed
-        </SelectItem>
+        </SelectItem> */}
       </SelectContent>
     </Select>
   );

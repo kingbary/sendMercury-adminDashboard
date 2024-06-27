@@ -6,7 +6,7 @@ function Skeleton({
 }) {
   return (
     (<div
-      className={cn("animate-pulse rounded-md bg-neutral-400/50 border border-neutral-400/60", className)}
+      className={cn("animate-pulse rounded-md bg-neutral-200/70 border border-neutral-300/60", className)}
       {...props} />)
   );
 }

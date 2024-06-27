@@ -6,35 +6,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function PlanSelect({ handlePlanChange }) {
+export default function PlanSelect() {
+  const searchParams = useSearchParams();
+  const status = searchParams.get("status");
+  const router = useRouter();
+
+  const onValueChange = (plan) => {
+    router.push(
+      `?plan=${plan}&status=${status}`
+    );
+  };
   return (
-    <Select
-      onValueChange={(value) => handlePlanChange(value)}
-      className="w-full"
-    >
+    <Select defaultValue="all" onValueChange={onValueChange} className="w-full">
       <SelectTrigger className="md:w-44">
-        <SelectValue defaultValue={""} placeholder="" />
+        <SelectValue placeholder="" />
       </SelectTrigger>
       <SelectContent className="">
-        <SelectItem value={undefined} onClick={() => handlePlanChange("")}>
-          All Plan
-        </SelectItem>
-        <SelectItem value="basic" onClick={() => handlePlanChange("basic")}>
-          Basic Plan
-        </SelectItem>
-        <SelectItem value="silver" onClick={() => handlePlanChange("silver")}>
-          Silver Plan
-        </SelectItem>
-        <SelectItem value="gold" onClick={() => handlePlanChange("gold")}>
-          Gold Plan
-        </SelectItem>
-        <SelectItem
-          value="platinum"
-          onClick={() => handlePlanChange("platinum")}
-        >
-          Platinum Plan
-        </SelectItem>
+        <SelectItem value={"all"}>All Plan</SelectItem>
+        <SelectItem value="starterSpark">Starter Spark</SelectItem>
+        <SelectItem value="growthGear">Growth Gear</SelectItem>
+        <SelectItem value="premium">Premium</SelectItem>
       </SelectContent>
     </Select>
   );

@@ -3,15 +3,14 @@ import React, { useState } from "react";
 import Container from "../universal/Container";
 import Image from "next/image";
 import EditProfileModal from "./EditProfileModal";
-import { useAdminData } from "@/app/provider/AdminDataProvider";
+import { useSession } from "next-auth/react";
 
 export default function Profile() {
-  const { adminData } = useAdminData();
-  const [avatar, setAvatar] = useState("/assets/images/profile-avatar.png");
+  const session = useSession();
+  const adminData = session?.data?.user?.data?.admin;
+  const [avatar, setAvatar] = useState(adminData?.avatar);
   const handleFileChange = (e) => {
     const fileInput = e.target;
-    const newFileName =
-      fileInput.files.length > 0 ? fileInput.files[0].name : "";
 
     if (fileInput.files.length > 0) {
       const reader = new FileReader();

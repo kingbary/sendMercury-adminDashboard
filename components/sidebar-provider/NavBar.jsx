@@ -1,9 +1,12 @@
-import { useAdminData } from "@/app/provider/AdminDataProvider";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
+import DropDown from "./DropDown";
 
 export default function NavBar({ isSidebarOpen, toggleSideBar }) {
-  const { adminData } = useAdminData();
+  const session = useSession();
+  const adminData = session?.data?.user?.data?.admin;
   return (
     <>
       <nav
@@ -75,41 +78,15 @@ export default function NavBar({ isSidebarOpen, toggleSideBar }) {
           />
         </div>
         <div className="relative md:flex gap-[15px] hidden">
-          <Image
-            src="/assets/icons/nav-notification.svg"
-            width={36}
-            height={36}
-            alt="notification icon"
-          />
-          <div className="flex gap-[5px] md:gap-[9px] items-center">
-            {adminData?.avatar ? (
-              <Image
-                src={`${adminData?.avatar}`}
-                width={30}
-                height={30}
-                alt=""
-              />
-            ) : (
-              <Image
-                src="/assets/icons/user.svg"
-                width={30}
-                height={30}
-                alt=""
-              />
-            )}
-            <p className="flex gap-1 text-base font-medium">
-              <span className="hidden lg:block">
-                {adminData?.fullName?.split(" ")[0]}{" "}
-              </span>
-              <span>{adminData?.fullName?.split(" ")[1]}</span>
-            </p>
+          <Link href={"/notifications"}>
             <Image
-              src="/assets/icons/arrow-down-2.svg"
-              width={20}
-              height={20}
-              alt=""
+              src="/assets/icons/nav-notification.svg"
+              width={36}
+              height={36}
+              alt="notification icon"
             />
-          </div>
+          </Link>
+          <DropDown />
         </div>
       </nav>
     </>

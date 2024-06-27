@@ -43,7 +43,7 @@ export default function CreateOrderModal({
   const [token, setToken] = useState("");
 
   // const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
-  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
+  const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
   useEffect(() => {
     const authToken = localStorage.getItem("token");
     setToken(authToken);

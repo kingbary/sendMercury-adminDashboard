@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { BeatLoader, ClipLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 import {
   Dialog,
   DialogClose,
@@ -20,9 +20,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import axios from "axios";
-import { toast } from "sonner";
-import useGetStores from "@/hooks/queries/useGetStores";
+import useGetVariant from "@/hooks/queries/useGetVariant";
+import useUpdateVariantStore from "@/hooks/mutations/useUpdateVariantStore";
 
 export default function AddProductDetailsModal({
   variantId,
@@ -31,63 +30,32 @@ export default function AddProductDetailsModal({
 }) {
   const [open, setOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
-  const [token, setToken] = useState("");
   const [SKU, setSKU] = useState("");
-  const [productDetails, setProductDetails] = useState("");
   const {
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting, errors },
+    formState: { errors },
   } = useForm({ mode: "all" });
-  const { data, isError } = useGetStores();
-  const storeOption = data?.data?.data.stores;
+  // const { data, isError } = useGetStores();
+  // const storeOption = data?.data?.data.stores;
 
-  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
+  const { data: variantData } = useGetVariant(variantId);
+  const productDetails = variantData?.data?.data?.variantStores[0];
 
-  useEffect(() => {
-    const authToken = localStorage.getItem("token");
-    setToken(authToken);
-  }, []);
-
-  useEffect(() => {
-    const getProductDetails = async () => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}/admin/variants/${variantId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = response.data.data.variantStores;
-        setProductDetails(data);
-      } catch (error) {
-        toast.error(`${error.response.data.message}`);
-      }
-    };
-
-    if (token) {
-      getProductDetails();
-    }
-  }, [token]);
-
+  const { mutate, isPending } = useUpdateVariantStore();
   const onSubmit = async (data) => {
     setSKU(data.sku);
     data.storeId = storeId;
-    console.log(data);
-    try {
-      await axios.patch(`${baseUrl}/admin/variants/${variantId}`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setConfirmationModal(true);
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error(`${error.response.data.message}`);
-    }
+    const payload = {
+      ...data,
+      variantId: variantId,
+    };
+    mutate(payload, {
+      onSuccess: () => {
+        setConfirmationModal(true);
+      },
+    });
   };
 
   const handleCloseModal = () => {
@@ -128,7 +96,7 @@ export default function AddProductDetailsModal({
                     className="border border-neutral200 rounded outline-none py-3 px-4 text-black"
                     id="sku"
                     placeholder="Enter SKU Number"
-                    defaultValue={productDetails[0]?.sku}
+                    defaultValue={productDetails?.sku}
                   />
                   {errors.sku && (
                     <p className="text-xs text-red-400 font-normal mt-1">
@@ -146,7 +114,7 @@ export default function AddProductDetailsModal({
                     className="border border-neutral200 rounded outline-none py-3 px-4"
                     id="productURL"
                     placeholder={"example: https://sendmercury.com/my-product"}
-                    defaultValue={productDetails[0]?.productURL}
+                    defaultValue={productDetails?.productURL}
                   />
                   {errors.productURL && (
                     <p className="text-xs text-red-400 font-normal mt-1">
@@ -155,8 +123,12 @@ export default function AddProductDetailsModal({
                   )}
                 </div>
                 <div className="flex flex-col items-center gap-4 mt-4">
-                  <Button variant="default" type="submit" className="flex gap-1">
-                    {isSubmitting ? <ClipLoader color="#ffffff" size={16} /> : ""}
+                  <Button
+                    variant="default"
+                    type="submit"
+                    className="flex gap-1"
+                  >
+                    {isPending ? <ClipLoader color="#ffffff" size={16} /> : ""}
                     Add Details
                   </Button>
                 </div>
@@ -242,12 +214,13 @@ export default function AddProductDetailsModal({
                     )}
                   </div>
                   <div className="flex flex-col items-center gap-4 mt-4">
-                    <Button variant="default" type="submit">
-                      {isSubmitting ? (
-                        <BeatLoader color="#ffffff" />
-                      ) : (
-                        "Add Details"
-                      )}
+                    <Button
+                      variant="default"
+                      type="submit"
+                      className="flex items-center justify-center gap-1"
+                    >
+                      {isPending ? <ClipLoader color="#ffffff" /> : null}
+                      Add Details
                     </Button>
                   </div>
                 </form>

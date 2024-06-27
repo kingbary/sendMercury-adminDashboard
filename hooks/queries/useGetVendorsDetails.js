@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function useGetVendorDetails(userId) {
   return useQuery({
-    queryKey: [`get-vendors-details, ${userId}`],
+    queryKey: ["get-vendors-details", userId],
     queryFn: () => getVendorsdetails(userId),
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,

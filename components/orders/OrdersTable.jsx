@@ -1,23 +1,13 @@
 import React, { useState } from "react";
-import { Button } from "../ui/button";
 import ToggleAccordionBtn from "../universal/ToggleAccordionBtn";
 import { formatDateTime } from "@/utils/formatDateTime";
-import useListPendingOrders from "@/hooks/queries/useListPendingOrders";
-import useListSuccessfulOrders from "@/hooks/queries/useListSuccessfulOrders";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
-import Image from "next/image";
-import useSetSuccessful from "@/hooks/mutations/orders/useSetSuccessful";
-import { data } from "autoprefixer";
-import useSetShipped from "@/hooks/mutations/orders/useSetShipped";
+import { Skeleton } from "../ui/skeleton";
+import OrderStatusSelect from "../universal/OrderStatusSelect";
+import useSetOrderStatus from "@/hooks/mutations/orders/useSetOrderStatus";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
-export default function OrdersTable({ activeTab }) {
+export default function OrdersTable({ orderData, isLoading }) {
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const handleToggleAccordion = (index) => {
@@ -27,24 +17,25 @@ export default function OrdersTable({ activeTab }) {
       setActiveIndex(index);
     }
   };
+  const deliveryOptions = [
+    { id: 1, value: undefined, option: "Delivered/Returned" },
+    { id: 2, value: "fulfilled", option: "Delivered" },
+    { id: 3, value: "returned", option: "Returned" },
+  ];
 
-  const { data: pendingData, isError } = useListPendingOrders();
-  const { data: successfulData, isError: isSuccessfulDataError } =
-    useListSuccessfulOrders();
-  const pendingOrderData = pendingData?.data.data.orders;
-  const successfulOrderData = successfulData?.data.data.orders;
-
-  const { mutate } = useSetSuccessful();
-  const { mutate: shippedMutate } = useSetShipped();
-
-  const handleSetToProcessed = (orderId) => {
-    data.orderId = orderId;
-    mutate(data);
-  };
-
-  const handleSetToShipped = (orderId) => {
-    data.orderId = orderId;
-    shippedMutate(data);
+  const processedOptions = [
+    { id: 1, value: undefined, option: "Set to processed/Cancel" },
+    { id: 2, value: "setToProcessed", option: "Set to processed" },
+    { id: 3, value: "cancel", option: "Cancel" },
+  ];
+  const { mutate } = useSetOrderStatus();
+  const handleOrderStatus = (orderStatus, orderId) => {
+    if (orderStatus === undefined) {
+      return null;
+    } else {
+      const payload = { orderStatus, orderId };
+      mutate(payload);
+    }
   };
 
   return (
@@ -57,159 +48,125 @@ export default function OrdersTable({ activeTab }) {
         <p>Price</p>
         <p>Order Time</p>
       </div>
-      {activeTab === "awaitingDelivery" && (
-        <>
-          {pendingOrderData ? (
-            <>
-              {pendingOrderData.map((order, index) => {
-                return (
-                  <div
-                    key={order?.id}
-                    className="mb-6 py-2 border-b border-neutral-300 w-full"
-                  >
-                    <div className="grid grid-cols-6 text-sm xl:text-base w-full">
-                      <p>{order?.vendor}</p>
-                      <p>{order?.product}</p>
-                      <p>{order?.store}</p>
-                      <p>{order?.quantity}</p>
-                      <p>{order?.totalPrice}</p>
-                      <div className="flex gap-1">
-                        <p className="text-left whitespace-nowrap">
-                          {formatDateTime(order?.orderTime)}
-                        </p>
-                        <ToggleAccordionBtn
-                          activeIndex={activeIndex}
-                          setActiveIndex={handleToggleAccordion}
-                          index={index}
-                        />
-                      </div>
-                    </div>
-                    <Button
-                      className="mt-4"
-                      variant="secondary"
-                      onClick={() => handleSetToProcessed(order?.id)}
-                    >
-                      Set to processed
-                    </Button>
-                    <div
-                      className={`mt-6 ${
-                        activeIndex === index ? "block" : "hidden"
-                      }`}
-                    >
-                      <div>
-                        <p className="font-semibold">Product Store ID</p>
-                        <p className="text-gray-500">{order?.address}</p>
-                      </div>
+      <>
+        {orderData?.length > 0 ? (
+          <>
+            {orderData?.map((order, index) => {
+              return (
+                <div
+                  key={order?.id}
+                  className="mb-6 py-2 border-b border-neutral-300 w-full"
+                >
+                  <div className="grid grid-cols-6 text-sm xl:text-base w-full">
+                    <p>{order?.vendor}</p>
+                    <p>{order?.product}</p>
+                    <p>{order?.store?.name}</p>
+                    <p>{order?.quantity}</p>
+                    <p>{order?.totalPrice}</p>
+                    <div className="flex gap-1">
+                      <p className="text-left whitespace-nowrap">
+                        {formatDateTime(order?.orderTime)}
+                      </p>
+                      <ToggleAccordionBtn
+                        activeIndex={activeIndex}
+                        setActiveIndex={handleToggleAccordion}
+                        index={index}
+                      />
                     </div>
                   </div>
-                );
-              })}
-            </>
-          ) : (
-            <p>Loading...</p>
-          )}
-        </>
-      )}
-
-      {activeTab === "processedDelivery" && (
-        <>
-          {successfulOrderData ? (
-            <>
-              {successfulOrderData.map((order, index) => {
-                return (
+                  {order?.status === "Pending" && (
+                    <OrderStatusSelect
+                      bgClass="bg-midGray"
+                      handleOrderStatus={handleOrderStatus}
+                      selectItems={processedOptions}
+                      orderId={order?.id}
+                    />
+                  )}
+                  {order?.status === "shipment_uploaded" ||
+                    (order?.status === "Shipped" && (
+                      <>
+                        {order?.status === "shipment_uploaded" ? (
+                          <Button
+                            className="bg-[#FF9900]"
+                            onClick={() =>
+                              handleOrderStatus("shipped", order?.id)
+                            }
+                          >
+                            Confirm delivery
+                          </Button>
+                        ) : (
+                          <OrderStatusSelect
+                            bgClass="bg-primaryBlue"
+                            orderId={order?.id}
+                            selectItems={deliveryOptions}
+                            handleOrderStatus={handleOrderStatus}
+                          />
+                        )}
+                      </>
+                    ))}
+                  {order?.status === "Delivered" && (
+                    <p className="text-[#219653] text-lg pt-4">
+                      Order delivered
+                    </p>
+                  )}
                   <div
-                    key={order?.id}
-                    className="mb-6 py-2 border-b border-neutral-300 w-full"
+                    className={`mt-6 ${
+                      activeIndex === index ? "block" : "hidden"
+                    }`}
                   >
-                    <div className="grid grid-cols-6 text-sm xl:text-base w-full">
-                      <p>{order?.vendor}</p>
-                      <p>{order?.product?.productName}</p>
-                      <p>{order?.store}</p>
-                      <p>{order?.quantity}</p>
-                      <p>{order?.totalPrice}</p>
-                      <div className="flex gap-1">
-                        <p className="text-left whitespace-nowrap">
-                          {formatDateTime(order?.orderTime)}
-                        </p>
-                        <ToggleAccordionBtn
-                          activeIndex={activeIndex}
-                          setActiveIndex={handleToggleAccordion}
-                          index={index}
-                        />
-                      </div>
-                    </div>
-
-                    <Button
-                      className="mt-4"
-                      variant="caution"
-                      onClick={() => handleSetToShipped(order?.id)}
-                    >
-                      Set to shipped
-                    </Button>
-                    <div
-                      className={`mt-6 ${
-                        activeIndex === index ? "block" : "hidden"
-                      }`}
-                    >
-                      <div>
-                        <p className="font-semibold">SKU number:</p>
-                        <p className="text-gray-500">
-                          {"No 7 Akin George Street Lagos, Nigeria"}
-                        </p>
-                      </div>
-                      <div className="grid grid-cols-4 w-full mt-6">
-                        <div>
-                          <p className="font-semibold">Courier Service</p>
-                          <p className="text-gray-500">
-                            {!order?.shipment?.courierName}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="font-semibold">Tracking ID</p>
-                          <p className="text-gray-500">
-                            {order?.shipment?.trackingCode}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="font-semibold">Contact Number</p>
-                          <p className="text-gray-500">
-                            {order?.shipment?.contactNumber}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="font-semibold">Receipt</p>
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <button className="bg-none text-primaryBlue font-medium">
-                                View Receipt
-                              </button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[425px]">
-                              <DialogHeader>
-                                <DialogTitle>Order receipt</DialogTitle>
-                                <DialogDescription>
-                                  <Image
-                                    src={"/assets/images/dp-avatar.png"}
-                                    width={400}
-                                    height={400}
-                                    alt="Order Receipt"
-                                  />
-                                </DialogDescription>
-                              </DialogHeader>
-                            </DialogContent>
-                          </Dialog>
-                        </div>
-                      </div>
+                    <div>
+                      <p className="font-semibold">Product Store ID</p>
+                      <p className="text-gray-500">{order?.address}</p>
+                      {order?.shipment?.courierName &&
+                        order?.shipment !== null && (
+                          <div className="grid grid-cols-4 gap-4 mt-4">
+                            <div>
+                              <p className="font-semibold">Courier Service</p>
+                              <p>{order?.shipment?.courierName}</p>
+                            </div>
+                            <div>
+                              <p className="font-semibold">Tracking ID</p>
+                              <p>{order?.shipment?.trackingCode}</p>
+                            </div>
+                            <div>
+                              <p className="font-semibold">Contact Number</p>
+                              <p>{order?.shipment?.contactNumber}</p>
+                            </div>
+                            <div>
+                              <p className="font-semibold">Receipt</p>
+                              <Link
+                                className="text-primaryBlue font-semibold"
+                                href={order?.shipment?.receipt}
+                                target="_blank"
+                              >
+                                View receipt
+                              </Link>
+                            </div>
+                          </div>
+                        )}
                     </div>
                   </div>
-                );
-              })}
-            </>
-          ) : (
-            <p>No data yet</p>
-          )}
-        </>
-      )}
+                </div>
+              );
+            })}
+          </>
+        ) : (
+          <>
+            {isLoading ? (
+              <div className="grid grid-cols-6 gap-4 w-full">
+                <Skeleton className="h-5 rounded-md mb-1" />
+                <Skeleton className="h-5 rounded-md mb-1" />
+                <Skeleton className="h-5 rounded-md mb-1" />
+                <Skeleton className="h-5 rounded-md mb-1" />
+                <Skeleton className="h-5 rounded-md mb-1" />
+                <Skeleton className="h-5 rounded-md mb-1" />
+              </div>
+            ) : (
+              "No orders available for the selected order status"
+            )}
+          </>
+        )}
+      </>
     </div>
   );
 }

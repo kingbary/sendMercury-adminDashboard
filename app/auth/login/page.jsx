@@ -5,33 +5,48 @@ import Footer from "../../../components/Footer";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { BeatLoader } from "react-spinners";
-import useLogin from "@/hooks/mutations/useLogin";
+import { ClipLoader } from "react-spinners";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
 
 export default function LoginPage() {
-  let [passwordType, setPasswordType] = useState("password");
-
-  const { mutate, isPending } = useLogin();
+  const [passwordType, setPasswordType] = useState("password");
   const router = useRouter();
 
   const requiredErrorMsg = "This field is required";
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     mode: "all",
   });
-  const onSubmit = async (data) => {
-    await mutate(data);
-    router.push("/");
+
+  const onSubmit = async ({ email, password }) => {
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result.error) {
+        toast.error(`Invalid credentials`);
+      } else {
+        // console.log(result);
+        router.push("/");
+      }
+    } catch (error) {
+      toast.error(`An unexpected error occurred: ${error.message}`);
+    }
   };
 
   const handleViewPassword = () => {
     setPasswordType("text");
   };
+
   const handleHidePassword = () => {
     setPasswordType("password");
   };
@@ -107,11 +122,18 @@ export default function LoginPage() {
           </div>
           <div className="flex justify-center mb-20">
             <Button
-              disable={isPending}
+              disabled={isSubmitting}
               variant="whiteBg"
-              className="px-10 font-bold w-full md:w-fit"
+              className="px-10 gap-2 font-bold w-full md:w-fit"
             >
-              {isPending ? <BeatLoader color="#0032C8" /> : "Login"}
+              {isSubmitting ? (
+                <>
+                  <ClipLoader color="#0032C8" size={18} />
+                  Login
+                </>
+              ) : (
+                "Login"
+              )}
             </Button>
           </div>
         </div>

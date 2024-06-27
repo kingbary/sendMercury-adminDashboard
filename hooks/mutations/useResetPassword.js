@@ -8,7 +8,6 @@ export default function useResetPassword() {
     mutationFn: resetPassword,
     onSuccess: (result) => {
       router.push("/change-password/success");
-      console.log(result)
     },
     onError: (error) => {
       console.log(error)

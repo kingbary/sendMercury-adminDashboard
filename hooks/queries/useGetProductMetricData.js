@@ -1,4 +1,4 @@
-import { listProductMetric } from "@/services/api/list-products";
+import { listProductMetric } from "@/services/api/products";
 import { useQuery } from "@tanstack/react-query";
 
 export default function useGetProductMetricData() {

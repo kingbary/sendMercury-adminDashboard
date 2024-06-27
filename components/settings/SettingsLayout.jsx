@@ -1,16 +1,18 @@
 "use client";
-import React, { useState } from "react";
-import { useAdminData } from "@/app/provider/AdminDataProvider";
+import React from "react";
 import Link from "next/link";
 import DashboardLayout from "../DashboardLayout";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 export default function SettingsLayout({ children }) {
-  const { adminData } = useAdminData();
   const pathname = usePathname();
   function isActiveTab(path) {
     return pathname === path;
   }
+  const handleLogout = () => {
+    signOut({ callbackUrl: "/auth/login" });
+  };
 
   return (
     <DashboardLayout>
@@ -74,6 +76,7 @@ export default function SettingsLayout({ children }) {
                   : ""
               } `}
               href={"#"}
+              onClick={handleLogout}
             >
               Logout
             </Link>

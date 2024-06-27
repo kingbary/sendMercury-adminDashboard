@@ -6,34 +6,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function ProductTypeSelect({ handleProductTypeSelect }) {
+export default function ProductTypeSelect() {
+  const searchParams = useSearchParams();
+  const status = searchParams.get("status");
+  const router = useRouter();
   return (
     <Select
-      onValueChange={(value) => handleProductTypeSelect(value)}
+      onValueChange={(productType) =>
+        router.push(
+          `?productType=${productType ?? "all"}&status=${status || ""}`
+        )
+      }
       className="w-full"
     >
       <SelectTrigger className="md:w-44">
         <SelectValue placeholder="" />
       </SelectTrigger>
       <SelectContent className="">
-        <SelectItem
-          onClick={() => handleProductTypeSelect("")}
-        >
-          All Types
-        </SelectItem>
-        <SelectItem
-          value="digital"
-          onClick={() => handleProductTypeSelect("digital")}
-        >
-          Digital Product
-        </SelectItem>
-        <SelectItem
-          value="physical"
-          onClick={() => handleProductTypeSelect("physical")}
-        >
-          Physical Product
-        </SelectItem>
+        <SelectItem>All Types</SelectItem>
+        <SelectItem value="digital">Digital Product</SelectItem>
+        <SelectItem value="physical">Physical Product</SelectItem>
       </SelectContent>
     </Select>
   );

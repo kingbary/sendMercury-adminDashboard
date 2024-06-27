@@ -1,39 +1,16 @@
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { DrawerClose } from "../ui/drawer";
-import { BeatLoader, ClipLoader } from "react-spinners";
-import { toast } from "sonner";
-import axios from "axios";
+import React from "react";
+import { ClipLoader } from "react-spinners";
+import useVetToLive from "@/hooks/mutations/useVetToLive";
+import { useAuthToken } from "@/hooks/useAuthToken";
 
 export default function VetProduct({ isActive }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [token, setToken] = useState();
-  // const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
-  const baseUrl = "https://send-mercury-backend-staging.up.railway.app/api/v1";
-  useEffect(() => {
-    const item = localStorage.getItem("token");
-    setToken(item);
-  }, []);
   const param = useParams();
   const productId = param.productId;
+  useAuthToken();
+  const { mutate, isPending } = useVetToLive();
   const handleVetToLive = async () => {
-    try {
-      setIsLoading(true);
-      const response = await axios.patch(
-        `${baseUrl}/admin/products/${productId}/live`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setIsLoading(false);
-      toast.success("Product has been veted to live!");
-    } catch (error) {
-      setIsLoading(false);
-      toast.error(`${error.response.data.message}`);
-    }
+    mutate(productId);
   };
   return (
     <>
@@ -56,7 +33,7 @@ export default function VetProduct({ isActive }) {
               className="rounded-full py-[10px] px-4"
               onClick={handleVetToLive}
             >
-              {isLoading ? (
+              {isPending ? (
                 <div className="flex items-center gap-1">
                   {" "}
                   <ClipLoader color="#000" size={20} /> Set live

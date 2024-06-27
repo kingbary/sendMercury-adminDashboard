@@ -1,71 +1,136 @@
-import React, { Component } from "react";
-import Chart from "react-apexcharts";
+import { formatNumbers } from "@/utils/formatNumbers.util";
+import { data } from "autoprefixer";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import ReactApexChart from "react-apexcharts";
+import { toast } from "sonner";
 
-class LineChart extends Component {
-  constructor(props) {
-    super(props);
+const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
 
-    this.state = {
-      options: {
-        chart: {
-          id: "metric-chart",
-        },
-        grid: {
-          show: false,
-          xaxis: {
-            lines: {
-              show: false,
+const LineChart = ({ activeTab }) => {
+  const [timeFrame, setTimeFrame] = useState("month");
+  const [token, setToken] = useState("");
+  const [salesData, setSalesData] = useState([]);
+  useEffect(() => {
+    const item = localStorage.getItem("token");
+    setToken(item);
+  }, []);
+
+  useEffect(() => {
+    const getSalesData = async () => {
+      try {
+        const response = await axios.get(
+          `${baseUrl}/admin/orders/sales-metric/${timeFrame}?year=${activeTab}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
             },
-          },
-        },
-        stroke: {
-          show: true,
-          curve: "straight",
-          lineCap: "butt",
-          colors: ["#0032c8", "#219653"],
-          width: 1.5,
-          dashArray: 0,
-        },
-        yaxis: {
-          axisBorder: {
-            show: true,
-            color: "#000",
-            offsetX: 0,
-            offsetY: 0,
-          },
-        },
-        xaxis: {
-          categories: this.props.categories || [],
-          axisBorder: {
-            show: true,
-            color: "#000",
-          },
-        },
-        legend: {
+          }
+        );
+        const data = response.data.data;
+        setSalesData(data);
+      } catch (error) {
+        toast.error(`${error}`);
+      }
+    };
+
+    if (token) {
+      getSalesData();
+    }
+  }, [token, activeTab, timeFrame]);
+  const options = {
+    colors: ["#0032c8", "#219653"],
+    chart: {
+      stacked: true,
+      toolbar: {
+        show: false,
+      },
+      zoom: {
+        enabled: false,
+      },
+    },
+    grid: {
+      show: false,
+      xaxis: {
+        lines: {
           show: false,
         },
       },
-      series: this.props.series || [],
-    };
-  }
+    },
+    stroke: {
+      show: true,
+      curve: "straight",
+      lineCap: "butt",
+      colors: ["#0032c8", "#219653"],
+      width: 1.5,
+      dashArray: 0,
+    },
 
-  render() {
-    return (
-      <div className="app">
-        <div className="row">
-          <div className="mixed-chart">
-            <Chart
-              options={this.state.options}
-              series={this.state.series}
-              type="line"
-              width="100%"
-              height="450"
-            />
-          </div>
+    dataLabels: {
+      enabled: false,
+    },
+    yaxis: {
+      axisBorder: {
+        show: true,
+        color: "#000",
+        offsetX: 0,
+        offsetY: 0,
+      },
+    },
+    xaxis: {
+      axisBorder: {
+        show: true,
+        color: "#000",
+        offsetX: 0,
+        offsetY: 0,
+      },
+      categories: salesData?.map((data)=> {
+        return data?.month
+      })
+    },
+    legend: {
+      position: "top",
+      horizontalAlign: "right",
+      fontWeight: 500,
+      fontSize: "18px",
+
+      markers: {
+        radius: 99,
+      },
+    },
+    fill: {
+      opacity: 1,
+    },
+  };
+  const [state, setState] = useState({
+    series: [
+      {
+        name: "Sales",
+        data: salesData.map((data) => {
+          return (data?.total + 100);
+        }),
+      },
+      {
+        name: "Revenue",
+        data: [13, 23, 20, 8, 13, 27, 15, 44, 55, 41, 67, 22, 43, 65],
+      },
+    ],
+  });
+
+  return (
+    <div className="col-span-12 rounded-sm shadow-small bg-white p-7 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4">
+      <div>
+        <div id="chartTwo" className="-ml-5 -mb-9">
+          <ReactApexChart
+            options={options}
+            series={state.series}
+            type="line"
+            height={450}
+          />
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default LineChart;

@@ -1,32 +1,24 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import Suspend from "@/components/vendor/Suspend";
 import { Button } from "@/components/ui/button";
-import ToggleAccordionBtn from "@/components/universal/ToggleAccordionBtn";
 import { useParams } from "next/navigation";
 import useGetVendorDetails from "@/hooks/queries/useGetVendorsDetails";
-import { PulseLoader } from "react-spinners";
 import ActivateVendor from "@/components/vendor/ActivateVendor";
+import { useAuthToken } from "@/hooks/useAuthToken";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Page() {
-  const [activeIndex, setActiveIndex] = useState(-1);
-  const handleToggleAccordion = (index) => {
-    if (activeIndex === index) {
-      setActiveIndex(-1);
-    } else {
-      setActiveIndex(index);
-    }
-  };
   const params = useParams();
   const userId = params.vendorId;
 
-  const { data, isError, isFetching } = useGetVendorDetails(userId);
+  useAuthToken();
+  const { data, isFetching } = useGetVendorDetails(userId);
   const vendorData = data?.data?.data;
   const products = vendorData?.products;
-  console.log(vendorData);
 
   return (
     <DashboardLayout>
@@ -56,9 +48,22 @@ export default function Page() {
             </>
           ) : null}
           {isFetching ? (
-            <div className="flex justify-center">
-              <PulseLoader color="#4d4d4d" size={10} />
-            </div>
+            <>
+              <div className="flex mt-8">
+                <Skeleton className="w-36 h-10 ml-4" />
+              </div>
+              <div className="relative bg-white lg:rounded-[20px] my-6 xl:mx- p-4 xl:p-4">
+                <div className="flex gap-8 items-center">
+                  <Skeleton className="w-[160px] h-[160px] rounded-full" />
+                  <div>
+                    <Skeleton className="w-40 h-7 mb-2" />
+                    <Skeleton className="w-20 h-5 mb-4" />
+                    <Skeleton className="w-40 h-7 mb-2" />
+                    <Skeleton className="w-56 h-5 mb-4" />
+                  </div>
+                </div>
+              </div>
+            </>
           ) : (
             <div className="relative bg-white lg:rounded-[20px] my-6 xl:mx- p-4 xl:p-4">
               <div className="flex flex-col">
@@ -87,12 +92,15 @@ export default function Page() {
                     </Button>
                     <p className="font-semibold">Contact Information</p>
                     <div className="flex flex-col md:flex-row gap-1 md:gap-8">
-                      <p>{vendorData?.email}</p>
-                      <p>{vendorData?.phone}</p>
-                      <p>
-                        {vendorData?.address}, {vendorData?.city},{" "}
-                        {vendorData?.state}
-                      </p>
+                      {vendorData ? (
+                        <>
+                          <p>{vendorData?.email}</p>
+                          <p>{vendorData?.phone}</p>
+                          <p>
+                            {vendorData?.address}, {vendorData?.state}
+                          </p>
+                        </>
+                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -108,8 +116,11 @@ export default function Page() {
           <div className="bg-white lg:rounded-[20px] my-6 xl:mx- p-4 xl:p-4">
             <h3 className="text-2xl font-bold">Products</h3>
             {isFetching ? (
-              <div className="flex justify-center">
-                <PulseLoader color="#4d4d4d" size={10} />
+              <div className="flex gap-4 mt-8">
+                <Skeleton className="w-[160px] h-4" />
+                <Skeleton className="w-[160px] h-4" />
+                <Skeleton className="w-[160px] h-4" />
+                <Skeleton className="w-[160px] h-4" />
               </div>
             ) : (
               <>

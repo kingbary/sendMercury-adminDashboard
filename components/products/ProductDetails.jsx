@@ -3,6 +3,7 @@ import Container from "../universal/Container";
 import Image from "next/image";
 import Link from "next/link";
 import { PulseLoader } from "react-spinners";
+import { Skeleton } from "../ui/skeleton";
 
 export default function ProductDetails({ productsData, isLoading }) {
   return (
@@ -17,7 +18,7 @@ export default function ProductDetails({ productsData, isLoading }) {
             <p className="text-center">Price</p>
             <p className="text-center">Status</p>
           </div>
-          {productsData ? (
+          {productsData?.length > 0 ? (
             <>
               {productsData.map((data) => {
                 return (
@@ -32,7 +33,7 @@ export default function ProductDetails({ productsData, isLoading }) {
                     <p className="text-center">{data?.type}</p>
                     <p className="text-center">{data?.price.toFixed(2)}</p>
                     <p
-                      className={`text-center ${
+                      className={`text-center text-sm ${
                         data?.status === "active"
                           ? "text-[#219653]"
                           : data?.status === "pending"
@@ -40,7 +41,7 @@ export default function ProductDetails({ productsData, isLoading }) {
                           : "text-[#EB001B]"
                       }`}
                     >
-                      {data?.status}
+                      {data?.status === "active" ? "live" : data?.status}
                     </p>{" "}
                     <div className="-rotate-90 w-[18px] h-[18px] border-[0.75px] rounded-[3px] border-neutral-200 absolute right-3 top-[13px]">
                       <Image
@@ -57,9 +58,14 @@ export default function ProductDetails({ productsData, isLoading }) {
           ) : (
             <div className="text-center hidden md:block">
               {isLoading ? (
-                <PulseLoader color="#4d4d4d" />
+                <>
+                  <Skeleton className="rounded-[8px] shadow w-full h-12 mb-6" />
+                  <Skeleton className="rounded-[8px] shadow w-full h-12 mb-6" />
+                  <Skeleton className="rounded-[8px] shadow w-full h-12 mb-6" />
+                  <Skeleton className="rounded-[8px] shadow w-full h-12 mb-6" />
+                </>
               ) : (
-                "No products avaialable"
+                "No products available for selected plan and status"
               )}
             </div>
           )}
